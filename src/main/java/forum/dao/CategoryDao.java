@@ -1,19 +1,15 @@
 package forum.dao;
 
-import forum.controller.ForumServlet;
 import forum.pojo.Category;
-import forum.pojo.Post;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 public class CategoryDao {
 
-    private String URL = "jdbc:mysql://localhost:3306/elitebaby";
-    private String USER = "ian";
-    private String PASSWORD = "";
+    private String URL = DaoId.URL;
+    private String USER = DaoId.USER;
+    private String PASSWORD = DaoId.PASSWORD;
 
     static {
         try {

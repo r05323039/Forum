@@ -6,7 +6,7 @@
 <body>
 
 <form action="/elitebaby/logServlet">
-    user_name:<input type="text" name="user_name" value="ian">
+    user_name:<input type="text" name="userName" value="ian">
     password:<input type="password" name="password" value="1234">
     <input type="submit">
 </form>

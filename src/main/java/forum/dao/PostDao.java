@@ -9,9 +9,9 @@ import java.util.ArrayList;
 
 public class PostDao {
 
-    private String URL = "jdbc:mysql://localhost:3306/elitebaby";
-    private String USER = "ian";
-    private String PASSWORD = "";
+    private String URL = DaoId.URL;
+    private String USER = DaoId.USER;
+    private String PASSWORD = DaoId.PASSWORD;
     private SimpleDateFormat format = new SimpleDateFormat("M月d日 HH:mm");
 
     static {

@@ -11,7 +11,7 @@ public class PostService {
     private PostDao postDao = new PostDao();
     private PostLikeDao postLikeDao = new PostLikeDao();
 
-    public ArrayList<Post> getAll(boolean order, String category_id, String topic) {
+    public ArrayList<Post> getAll(boolean order, String categoryId, String topic) {
         ArrayList<Post> posts = new ArrayList<>();
         if (order) {
             posts = postDao.selectPopular();
@@ -19,8 +19,8 @@ public class PostService {
             posts = postDao.selectAll();
         }
 
-        if (category_id != null) {
-            String category = postDao.getCategoryById(Integer.parseInt(category_id));
+        if (categoryId != null) {
+            String category = postDao.getCategoryById(Integer.parseInt(categoryId));
             posts = categoryFilter(posts, category);
         }
         if (topic != null) {
@@ -29,32 +29,32 @@ public class PostService {
         return posts;
     }
     public ArrayList<Post> categoryFilter(ArrayList<Post> posts, String category) {
-        ArrayList<Post> filtered_posts = new ArrayList<>();
+        ArrayList<Post> filteredPosts = new ArrayList<>();
         for (Post p : posts) {
             if (category.equals(p.getCategory()))
-                filtered_posts.add(p);
+                filteredPosts.add(p);
         }
-        return filtered_posts;
+        return filteredPosts;
     }
     public ArrayList<Post> topicFilter(ArrayList<Post> posts, String topic) {
-        ArrayList<Post> filtered_posts = new ArrayList<>();
+        ArrayList<Post> filteredPosts = new ArrayList<>();
         for (Post p : posts) {
             if (p.getTopic().contains(topic))
-                filtered_posts.add(p);
+                filteredPosts.add(p);
         }
-        return filtered_posts;
+        return filteredPosts;
     }
-    public void like_generator() {
-        postLikeDao.like_generator();
+    public void likeGenerator() {
+        postLikeDao.generator();
     }
-    public void like_clean() {
-        postLikeDao.like_clean();
+    public void likeClean() {
+        postLikeDao.clean();
     }
-    public void like_click(int post_id, int user_id) {
-        if (postLikeDao.like_check(post_id, user_id)) {
-            postLikeDao.like_minus(post_id, user_id);
+    public void likeClick(int postId, int userId) {
+        if (postLikeDao.check(postId, userId)) {
+            postLikeDao.minus(postId, userId);
         } else {
-            postLikeDao.like_plus(post_id, user_id);
+            postLikeDao.plus(postId, userId);
         }
 
     }

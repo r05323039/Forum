@@ -13,7 +13,7 @@ public class logServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("login servlet");
 
-        String userName = request.getParameter("user_name");
+        String userName = request.getParameter("userName");
         String password = request.getParameter("password");
         System.out.println(userName + "," + password);
 

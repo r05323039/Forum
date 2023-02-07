@@ -17,8 +17,8 @@ import java.util.ArrayList;
 
 @WebServlet("/forum/*")
 public class ForumServlet extends BaseServlet {
-    private CategoryService C_service = new CategoryService();
-    private PostService P_service = new PostService();
+    private CategoryService categoryService = new CategoryService();
+    private PostService postService = new PostService();
 
 
 
@@ -31,14 +31,14 @@ public class ForumServlet extends BaseServlet {
         }
         System.out.println("order:" + order);
 
-        String category_id = request.getParameter("categoryid");
+        String categoryId = request.getParameter("categoryId");
         String topic = request.getParameter("topic");
-        System.out.println(category_id + "," + topic);
+        System.out.println(categoryId + "," + topic);
         //呼叫+封裝
-        ArrayList<Post> posts = P_service.getAll(order, category_id, topic);
+        ArrayList<Post> posts = postService.getAll(order, categoryId, topic);
         request.setAttribute("posts", posts);
 
-        ArrayList<ArrayList<Category>> Cs = C_service.getAll();
+        ArrayList<ArrayList<Category>> Cs = categoryService.getAll();
         request.setAttribute("LCs", Cs.get(0));
         request.setAttribute("HCs", Cs.get(1));
 
@@ -48,21 +48,21 @@ public class ForumServlet extends BaseServlet {
     }
 
     public void like(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        P_service.like_generator();
+        postService.likeGenerator();
         response.sendRedirect("http://localhost:8080/elitebaby/forum/home");
     }
 
     public void likeclean(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        P_service.like_clean();
+        postService.likeClean();
         response.sendRedirect("http://localhost:8080/elitebaby/forum/home");
     }
 
     public void likeclick(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        int user_id = user.getUserId();
-        int post_id = Integer.parseInt(request.getParameter("postid"));
-        P_service.like_click(post_id, user_id);
+        int userId = user.getUserId();
+        int postId = Integer.parseInt(request.getParameter("postId"));
+        postService.likeClick(postId,userId);
         response.sendRedirect("http://localhost:8080/elitebaby/forum/home");
     }
 }

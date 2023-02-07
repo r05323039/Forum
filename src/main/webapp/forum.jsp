@@ -27,9 +27,9 @@
         <span type="submit" id="search-text">搜尋按鈕</span>
     </div>
     <% boolean order = (boolean) request.getAttribute("order");
-        String show_order = (order) ? "熱門" : "最新";
+        String showOrder = (order) ? "熱門" : "最新";
     %>
-    <div class="switch">文章排序:<a href="http://localhost:8080/elitebaby/forum/home?order=${order}&switch=1"><%=show_order%>
+    <div class="switch">文章排序:<a href="http://localhost:8080/elitebaby/forum/home?order=<%=order%>&switch=1"><%=showOrder%>
     </a></div>
     <div class="post"><img src="" alt="圖"/>我要發文</div>
     <div class="follow"><img src="" alt="圖"/>收藏</div>
@@ -62,7 +62,7 @@
 
                 <% for (Category lc : LCs) {%>
                 <div class="item">
-                    <a href="http://localhost:8080/elitebaby/forum/home?order=${order}&categoryid=<%=lc.getId()%>">
+                    <a href="http://localhost:8080/elitebaby/forum/home?order=<%=order%>&categoryId=<%=lc.getId()%>">
                         <span class="<%=lc.getImg()%> items"> <%=lc.getCategory()%></span>
                         <button>收藏</button>
                     </a>
@@ -73,7 +73,7 @@
 
                 <% for (Category hc : HCs) {%>
                 <div class="item">
-                    <a href="http://localhost:8080/elitebaby/forum/home?order=${order}&categoryid=<%=hc.getId()%>">
+                    <a href="http://localhost:8080/elitebaby/forum/home?order=<%=order%>&categoryId=<%=hc.getId()%>">
                         <span class="<%=hc.getImg()%> items"> <%=hc.getCategory()%></span>
                         <button>收藏</button>
                     </a>
@@ -91,16 +91,16 @@
             <article id="post">
                 <div class="d1">
                     <div class="category" id="category">《<%=p.getCategory()%>》</div>
-                    <div class="topic" id="topic"><%=p.getTopic()%>--<%=p.getPostId()%>
+                    <div class="topic" id="topic"><%=p.getTopic()%>
                     </div>
                 </div>
                 <div class="d2">
                     <div class="user" id="user"><%=p.getUserId()%>
                     </div>
-                    <div class="date" id="date"><%=p.getTimestamp()%>
+                    <div class="date" id="date"><%=p.getTimestamp()%>(<%=p.getPostId()%>)
                     </div>
                     <div class="like" id="like">
-                        <a id = "" href="http://localhost:8080/elitebaby/forum/likeclick?postid=<%=p.getPostId()%>">
+                        <a id = "" href="http://localhost:8080/elitebaby/forum/likeclick?postId=<%=p.getPostId()%>">
                             <i class="fa-solid fa-thumbs-up"></i>
                             <%=p.getLike()%>
                         </a>
@@ -134,13 +134,12 @@
 <%--            swi.href = "http://localhost:8080/elitebaby/forum/home";--%>
 <%--        }--%>
 <%--    });--%>
-
-<%--jsp每篇迴圈產生的category及post要藏id(p.getPostId())，方便JS抓--%>
-<%--按like時，js抓postId組網址href，fetch(forum/click) --%>
+<%--1.jsp每篇迴圈產生的category及post要藏id(p.getPostId())，方便JS抓--%>
+<%--2.按like時，js抓postId組網址href，fetch(forum/click) --%>
 <%--後端  返回最新讚數   前端再把最新數字填入--%>
-
-<%--寫一個 ajaxFilter，過濾登入，@WebFilter("/forum/likeclick")，
+<%--3.寫一個 ajaxFilter，過濾登入，@WebFilter("/forum/likeclick")，
 失敗時不要直接 response.sendRedirect("http://localhost:8080/elitebaby/login.jsp");
 而是返回JSON通知失敗訊息，再fetch寫出返回失敗訊息時，從前端導頁 href="http://localhost:8080/elitebaby/login.jsp")
+<%----%>
 </script>
 </html>
