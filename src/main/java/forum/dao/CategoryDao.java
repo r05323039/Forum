@@ -40,4 +40,27 @@ public class CategoryDao {
             throw new RuntimeException(e);
         }
     }
+
+    public ArrayList<Category> selectCollected(int userId) {
+        String sql = "select * from category join collection_category cc on category.id = cc.category_id\n" +
+                "where user_id = ?";
+        ArrayList<Category> categories = new ArrayList<>();
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1,userId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                categories.add(
+                        new Category(
+                                rs.getInt("id"),
+                                rs.getString("category"),
+                                rs.getString("img"),
+                                rs.getInt("level")
+                        ));
+            }
+            return categories;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -80,7 +80,7 @@ public class PostLikeDao {
     }
 
     public int count(int postId) {
-//        int like = -1;
+        int like = 0;
         String sql = "select post_id, count(*) as plike from post_like\n" +
                 "where post_id = ?\n" +
                 "group by post_id;";
@@ -89,13 +89,12 @@ public class PostLikeDao {
             ps.setInt(1, postId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-              int  like = rs.getInt("plike");
-                return like;
+                like = rs.getInt("plike");
             }
+            return like;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return -5;
     }
 }
 

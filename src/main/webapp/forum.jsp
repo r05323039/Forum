@@ -18,18 +18,22 @@
 </head>
 <body>
 <header>Header</header>
+<% boolean order = (boolean) request.getAttribute("order");
+    String showOrder = (order) ? "熱門" : "最新";
+    String categoryId = (String) request.getAttribute("categoryId");
+%>
+
 
 <div class="sticky">
     <div class="search">
-        <a href="http://localhost:8080/elitebaby/forum/like">GetLike</a>
-        <a href="http://localhost:8080/elitebaby/forum/likeclean">CleanLike</a>
-        <input class="input-text" type="text" placeholder="文字搜尋"/>
-        <span type="submit" id="search-text">搜尋按鈕</span>
+        <a href="http://localhost:8080/elitebaby/forum/like" style="display: none">GetLike</a>
+        <a href="http://localhost:8080/elitebaby/forum/likeclean" style="display: none">CleanLike</a>
+        <span>歡迎 USERNAME</span>
+        <span>積分: 100</span>
     </div>
-    <% boolean order = (boolean) request.getAttribute("order");
-        String showOrder = (order) ? "熱門" : "最新";
-    %>
-    <div class="switch">文章排序:<a href="http://localhost:8080/elitebaby/forum/home?order=<%=order%>&switch=1"><%=showOrder%>
+
+    <div class="switch">文章排序:<a
+            href="http://localhost:8080/elitebaby/forum/home?order=<%=order%>&switch=1"><%=showOrder%>
     </a></div>
     <div class="post"><img src="" alt="圖"/>我要發文</div>
     <div class="follow"><img src="" alt="圖"/>收藏</div>
@@ -38,6 +42,12 @@
 <div class="before-main">
     <main>
         <section class="left">
+            <form style="display: inline-block" action="http://localhost:8080/elitebaby/forum/home">
+                <input class="input-text" type="text" placeholder="文字搜尋" name="topic"/>
+                <input type="hidden" name="order" value="<%=order%>">
+                <input type="hidden" name="categoryId" value="<%=categoryId%>">
+                <input type="submit" value="標題搜尋">
+            </form>
             <div class="collection">
                 <div class="text">追蹤看板</div>
                 <%--                <%--%>
@@ -61,22 +71,22 @@
                 <div class="text">幼兒生</div>
 
                 <% for (Category lc : LCs) {%>
-                <div class="item">
+                <div class="item category<%=lc.getId()%>">
                     <a href="http://localhost:8080/elitebaby/forum/home?order=<%=order%>&categoryId=<%=lc.getId()%>">
                         <span class="<%=lc.getImg()%> items"> <%=lc.getCategory()%></span>
-                        <button>收藏</button>
                     </a>
+                    <span class="addCollections" id="<%=lc.getId()%>">收藏</span>
                 </div>
                 <%}%>
 
                 <div class="text">大學生</div>
 
                 <% for (Category hc : HCs) {%>
-                <div class="item">
+                <div class="item category<%=hc.getId()%>">
                     <a href="http://localhost:8080/elitebaby/forum/home?order=<%=order%>&categoryId=<%=hc.getId()%>">
                         <span class="<%=hc.getImg()%> items"> <%=hc.getCategory()%></span>
-                        <button>收藏</button>
                     </a>
+                    <span class="addCollections" id="<%=hc.getId()%>">收藏</span>
                 </div>
                 <%}%>
 
@@ -99,15 +109,15 @@
                     </div>
                     <div class="date" id="date"><%=p.getTimestamp()%>(<%=p.getPostId()%>)
                     </div>
-                    <div class="like" id="like">
-                        <a id = "" href="http://localhost:8080/elitebaby/forum/likeclick?postId=<%=p.getPostId()%>">
+                    <div class="like">
+                        <span class="spanlike like<%=p.getPostId()%>" id="<%=p.getPostId()%>">
                             <i class="fa-solid fa-thumbs-up"></i>
-                            <%=p.getLike()%>
-                        </a>
+                            <span><%=p.getLike()%></span>
+                        </span>
                     </div>
                 </div>
                 <hr/>
-                <div class="d3">
+                <div class="d3 post<%=p.getPostId()%>">
                     <p class="content" id="content"><%=p.getContent()%>
                     </p>
                     <!--                    <img src=""/>-->
@@ -125,21 +135,61 @@
 </body>
 
 <script>
-<%--    &lt;%&ndash;文章排序&ndash;%&gt;--%>
-<%--    const swi = document.getElementById("switch");--%>
-<%--    swi.addEventListener("click", function () {--%>
-<%--        if (swi.innerText === "最新") {--%>
-<%--            swi.href = "http://localhost:8080/elitebaby/forum/popular";--%>
-<%--        } else {--%>
-<%--            swi.href = "http://localhost:8080/elitebaby/forum/home";--%>
-<%--        }--%>
-<%--    });--%>
-<%--1.jsp每篇迴圈產生的category及post要藏id(p.getPostId())，方便JS抓--%>
-<%--2.按like時，js抓postId組網址href，fetch(forum/click) --%>
-<%--後端  返回最新讚數   前端再把最新數字填入--%>
-<%--3.寫一個 ajaxFilter，過濾登入，@WebFilter("/forum/likeclick")，
-失敗時不要直接 response.sendRedirect("http://localhost:8080/elitebaby/login.jsp");
-而是返回JSON通知失敗訊息，再fetch寫出返回失敗訊息時，從前端導頁 href="http://localhost:8080/elitebaby/login.jsp")
-<%----%>
+    <%--1.jsp每篇迴圈產生的category及post要藏id(p.getPostId())，方便JS抓--%>
+    // const cate5 = document.querySelector(".category5");
+    // console.log(cate5);
+    // const cate8 = document.querySelector(".category8");
+    // console.log(cate8);
+    // const post18 = document.querySelector(".post18");
+    // console.log(post18);
+    // const like18 = document.querySelector(".like18");
+    // console.log(like18);
+
+    <%--2.按like時，JS抓postId組網址，fetch(forum/likeclick)，後端JSON字串傳遞結果，false移轉登入，number更新讚數 --%>
+    const likes = document.querySelectorAll(".spanlike");
+    for (const like of likes) {
+        const secondSpan = like.querySelector(":nth-child(2)");
+        like.addEventListener("click", () => {
+
+            fetch("http://localhost:8080/elitebaby/forum/likeclick?postId=" + like.id)
+                .then(response => response.text())
+                .then(text => JSON.parse(text))
+                .then(data => {
+                    console.log(data);
+                    if (data === "login") {
+                        window.location.href = "http://localhost:8080/elitebaby/login.jsp";
+                    }
+                    if (typeof data === "number") {
+                        secondSpan.innerText = data;
+                    }
+                })
+        })
+    }//end
+
+    //3.category板塊for迴圈產生收藏功能
+    const collections = document.querySelectorAll(".addCollections")
+    for (const coll of collections) {
+        // console.log(coll.id);//ID為板塊編號
+        coll.addEventListener("click", () => {
+            fetch("http://localhost:8080/elitebaby/forum/categoryCollect?categoryId=" + coll.id)
+                .then(response => response.text())
+                .then(text => JSON.parse(text))
+                .then(data => {
+                    console.log(data);
+                    if (data === "login") {
+                        window.location.href = "http://localhost:8080/elitebaby/login.jsp";
+                    }
+                    if (data === true) {
+                        window.alert("成功收藏")
+                        //合併true跟false，fetch(forum/getCollections->後端回傳最新的收藏posts)
+                        //讓收藏版塊重新載入
+                    }
+                    if (data === false){
+                        window.alert("取消收藏")
+                    }
+                })
+        })
+    }
+
 </script>
 </html>

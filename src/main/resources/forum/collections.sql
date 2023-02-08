@@ -12,16 +12,17 @@ create table collection_post
 );
 
 ----------collection_category----------
+DROP TABLE IF EXISTS collection_category;
 create table collection_category
 (
-    user_id  int         not null,
-    category varchar(50) not null,
-    constraint category_collections_pk
-        unique (user_id, category),
-    constraint category_collections_member_USER_ID_fk
-        foreign key (user_id) references elitebaby.member (USER_ID),
-    constraint category_collections_post_category_fk
-        foreign key (category) references elitebaby.post (category)
+    user_id     int not null,
+    category_id int not null,
+    constraint collection_category_pk
+        unique (user_id, category_id),
+    constraint collection_category_category_id_fk
+        foreign key (category_id) references elitebaby.category (id),
+    constraint collection_category_member_USER_ID_fk
+        foreign key (user_id) references elitebaby.member (USER_ID)
 );
 ----------collection_user----------
 create table collection_user

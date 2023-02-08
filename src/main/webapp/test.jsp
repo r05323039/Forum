@@ -1,5 +1,5 @@
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="forum.pojo.Category" %><%--
+<%@ page import="forum.pojo.Category" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -17,8 +17,9 @@
 
 
 <div>
-    <a href="http://localhost:8080/elitebaby/index/index?category=heath&topic=market">789</a>
+    <a href="http://localhost:8080/elitebaby/forum/CollectedCategories">789</a>
 </div>
+
 
 
 </body>

@@ -19,7 +19,7 @@ public class PostService {
             posts = postDao.selectAll();
         }
 
-        if (categoryId != null) {
+        if (categoryId != null && !categoryId.equals("null")) {
             String category = postDao.getCategoryById(Integer.parseInt(categoryId));
             posts = categoryFilter(posts, category);
         }
@@ -50,13 +50,13 @@ public class PostService {
     public void likeClean() {
         postLikeDao.clean();
     }
-    public void likeClick(int postId, int userId) {
+    public int likeClick(int postId, int userId) {
         if (postLikeDao.check(postId, userId)) {
             postLikeDao.minus(postId, userId);
         } else {
             postLikeDao.plus(postId, userId);
         }
-
+        return postLikeDao.count(postId);
     }
 }
 
