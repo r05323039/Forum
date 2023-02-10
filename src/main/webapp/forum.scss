@@ -36,18 +36,9 @@ main {
     background-color: antiquewhite;
     width: 20%;
 
-    .collection{
-      border: 1px solid blue;
-      .item{
-        border: 1px sandybrown solid;
-        padding: 1rem;
-      }
-
-    }
-
     .category{
       border: 1px solid blue;
-      .item{
+      .items{
         border: 1px sandybrown solid;
         padding: 1rem;
       }

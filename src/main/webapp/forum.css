@@ -28,14 +28,9 @@ main {
   main section.left {
     background-color: antiquewhite;
     width: 20%; }
-    main section.left .collection {
-      border: 1px solid blue; }
-      main section.left .collection .item {
-        border: 1px sandybrown solid;
-        padding: 1rem; }
     main section.left .category {
       border: 1px solid blue; }
-      main section.left .category .item {
+      main section.left .category .items {
         border: 1px sandybrown solid;
         padding: 1rem; }
     main section.left div.search-text {

@@ -43,6 +43,16 @@ public class ForumServlet extends BaseServlet {
 
         request.setAttribute("categoryId", categoryId);
         request.setAttribute("order", order);
+        request.setAttribute("topic", topic);
+
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user != null) {
+            int userId = user.getUserId();
+            ArrayList<Category> collectedCategories = categoryService.getCollectedCategories(userId);
+            request.setAttribute("CCs", collectedCategories);
+        }
+
         //傳送
         request.getRequestDispatcher("/forum.jsp").forward(request, response);
     }
@@ -69,7 +79,7 @@ public class ForumServlet extends BaseServlet {
         response.getWriter().write(String.valueOf(count));
     }
 
-    public void CollectedCategories(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void collectedCategories(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         int userId = user.getUserId();

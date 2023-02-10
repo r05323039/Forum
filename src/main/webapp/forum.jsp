@@ -1,6 +1,7 @@
 <%@ page import="forum.pojo.Post" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="forum.pojo.Category" %>
+<%@ page import="login.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -48,48 +49,58 @@
                 <input type="hidden" name="categoryId" value="<%=categoryId%>">
                 <input type="submit" value="標題搜尋">
             </form>
-            <div class="collection">
-                <div class="text">追蹤看板</div>
-                <%--                <%--%>
-                <%--                    ArrayList<Category> svgs = (ArrayList<Category>) request.getAttribute("images");--%>
-                <%--                    for (Category svg : svgs) {--%>
-                <%--                %>--%>
-                <div class="item">
-                    <%--                    這邊要做收藏的，但邏輯一樣--%>
-                    <%--                    <span class="<%=svg.getImg()%>"><%=svg.getCategory()%></span>--%>
-                </div>
-                <%--                <%}%>--%>
-            </div>
+
+            <%--            <div class="cloneBlock category">--%>
+            <%--            </div>--%>
 
             <br/>
             <br/>
-            <%
-                ArrayList<Category> LCs = (ArrayList<Category>) request.getAttribute("LCs");
-                ArrayList<Category> HCs = (ArrayList<Category>) request.getAttribute("HCs");
-            %>
+
             <div class="category">
+                <div class="text">我的最愛</div>
+                <div class="cloneBlock">
+                    <%
+                        User user = (User) session.getAttribute("user");
+                        if (user != null) {
+                            ArrayList<Category> CCs = (ArrayList<Category>) request.getAttribute("CCs");
+                            System.out.println(CCs);
+                            for (Category cc : CCs) {
+                    %>
+                    <div class="items category<%=cc.getId()%>">
+                        <a href="http://localhost:8080/elitebaby/forum/home?order=<%=order%>&categoryId=<%=cc.getId()%>">
+                            <span class="<%=cc.getImg()%> item"> <%=cc.getCategory()%></span>
+                        </a>
+                        <span class="addCollections" id="<%=cc.getId()%>">收藏</span>
+                    </div>
+                    <%
+                            }
+                        }
+                    %>
+                </div>
+                </br>
+                <%
+                    ArrayList<Category> LCs = (ArrayList<Category>) request.getAttribute("LCs");
+                    ArrayList<Category> HCs = (ArrayList<Category>) request.getAttribute("HCs");
+                %>
                 <div class="text">幼兒生</div>
-
                 <% for (Category lc : LCs) {%>
-                <div class="item category<%=lc.getId()%>">
+                <div class="items category<%=lc.getId()%>">
                     <a href="http://localhost:8080/elitebaby/forum/home?order=<%=order%>&categoryId=<%=lc.getId()%>">
-                        <span class="<%=lc.getImg()%> items"> <%=lc.getCategory()%></span>
+                        <span class="<%=lc.getImg()%> item"> <%=lc.getCategory()%></span>
                     </a>
                     <span class="addCollections" id="<%=lc.getId()%>">收藏</span>
                 </div>
                 <%}%>
 
                 <div class="text">大學生</div>
-
                 <% for (Category hc : HCs) {%>
-                <div class="item category<%=hc.getId()%>">
+                <div class="items category<%=hc.getId()%>">
                     <a href="http://localhost:8080/elitebaby/forum/home?order=<%=order%>&categoryId=<%=hc.getId()%>">
-                        <span class="<%=hc.getImg()%> items"> <%=hc.getCategory()%></span>
+                        <span class="<%=hc.getImg()%> item"> <%=hc.getCategory()%></span>
                     </a>
                     <span class="addCollections" id="<%=hc.getId()%>">收藏</span>
                 </div>
                 <%}%>
-
             </div>
         </section>
 
@@ -150,7 +161,6 @@
     for (const like of likes) {
         const secondSpan = like.querySelector(":nth-child(2)");
         like.addEventListener("click", () => {
-
             fetch("http://localhost:8080/elitebaby/forum/likeclick?postId=" + like.id)
                 .then(response => response.text())
                 .then(text => JSON.parse(text))
@@ -166,30 +176,53 @@
         })
     }//end
 
-    //3.category板塊for迴圈產生收藏功能
+    //3.收藏版塊，點選自己移除
+    const cloneBlock = document.querySelector(".cloneBlock");
+    function removeCloneItem() {
+        // console.log("remove監聽器產生");
+        const cloneItems = cloneBlock.querySelectorAll(".items");
+        for (let cloneItem of cloneItems) {
+            cloneItem.addEventListener("click", () => {
+                cloneItem.remove();
+            })
+        }
+    }
+    removeCloneItem();
+    //4.category板塊for迴圈產生收藏功能
     const collections = document.querySelectorAll(".addCollections")
     for (const coll of collections) {
-        // console.log(coll.id);//ID為板塊編號
+        // console.log(coll.id);
         coll.addEventListener("click", () => {
             fetch("http://localhost:8080/elitebaby/forum/categoryCollect?categoryId=" + coll.id)
                 .then(response => response.text())
                 .then(text => JSON.parse(text))
                 .then(data => {
-                    console.log(data);
+                    // console.log(data);
                     if (data === "login") {
                         window.location.href = "http://localhost:8080/elitebaby/login.jsp";
                     }
                     if (data === true) {
-                        window.alert("成功收藏")
-                        //合併true跟false，fetch(forum/getCollections->後端回傳最新的收藏posts)
-                        //讓收藏版塊重新載入
+                        // window.alert("成功收藏")
+                        //產生收藏文章 clone
+                        const cloneCateId = ".category" + coll.id;
+                        const cloneCate = cloneBlock.querySelector(cloneCateId);
+                        if (cloneCate == null) {
+                            const collClone = coll.parentElement.cloneNode(true);
+                            cloneBlock.append(collClone);
+                            removeCloneItem();
+                        }
                     }
-                    if (data === false){
-                        window.alert("取消收藏")
+                    if (data === false) {
+                        // window.alert("取消收藏")
+                        //移除收藏文章 clone
+                        const cloneCateId = ".category" + coll.id;
+                        const cloneCate = cloneBlock.querySelector(cloneCateId);
+                        if (cloneCate != null) {
+                            cloneCate.remove();
+                        }
                     }
                 })
         })
     }
-
 </script>
 </html>
