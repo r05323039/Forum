@@ -51,7 +51,6 @@ public class PostLikeDao {
         } catch (SQLException e) {
         }
     }
-
     public void minus(int postId, int userId) {
         String sql = "delete from post_like where post_id = ? and user_id = ?;";
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
@@ -62,7 +61,6 @@ public class PostLikeDao {
         } catch (SQLException e) {
         }
     }
-
     public boolean check(int postId, int userId) {
         String sql = "select * from post_like where post_id = ? and user_id = ?;";
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
@@ -78,7 +76,6 @@ public class PostLikeDao {
             throw new RuntimeException(e);
         }
     }
-
     public int count(int postId) {
         int like = 0;
         String sql = "select post_id, count(*) as plike from post_like\n" +

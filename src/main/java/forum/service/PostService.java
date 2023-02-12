@@ -1,16 +1,15 @@
 package forum.service;
-
+import forum.dao.MsgDao;
 import forum.dao.PostDao;
 import forum.dao.PostLikeDao;
+import forum.pojo.Msg;
 import forum.pojo.Post;
-
+import forum.pojo.PostBean;
 import java.util.ArrayList;
-
-
 public class PostService {
     private PostDao postDao = new PostDao();
     private PostLikeDao postLikeDao = new PostLikeDao();
-
+    private MsgDao msgDao = new MsgDao();
     public ArrayList<Post> getAll(boolean order, String categoryId, String topic) {
         ArrayList<Post> posts = new ArrayList<>();
         if (order) {
@@ -57,6 +56,14 @@ public class PostService {
             postLikeDao.plus(postId, userId);
         }
         return postLikeDao.count(postId);
+    }
+    public PostBean getPostBean(int postId){
+        Post post = postDao.getPostById(postId);
+        ArrayList<Msg> msgs = msgDao.selectMsgsIdAsc(postId);
+        PostBean postBean = new PostBean();
+        postBean.setPost(post);
+        postBean.setMsgs(msgs);
+        return postBean;
     }
 }
 

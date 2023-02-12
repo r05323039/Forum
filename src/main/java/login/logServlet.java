@@ -1,5 +1,7 @@
 package login;
 
+import forum.pojo.User;
+
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
@@ -8,7 +10,6 @@ import java.io.IOException;
 @WebServlet(name = "logServlet", value = "/logServlet")
 public class logServlet extends HttpServlet {
     private UserDao userDao = new UserDao();
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("login servlet");

@@ -1,5 +1,6 @@
 package forum.dao;
 
+import com.mysql.cj.xdevapi.SessionFactory;
 import forum.pojo.Post;
 
 import java.sql.*;
@@ -8,7 +9,6 @@ import java.util.ArrayList;
 
 
 public class PostDao {
-
     private String URL = DaoId.URL;
     private String USER = DaoId.USER;
     private String PASSWORD = DaoId.PASSWORD;
@@ -84,14 +84,44 @@ public class PostDao {
         }
     }
 
-    public String getCategoryById(int id){
+    public Post getPostById(int postId) {
+        String sql = "select p.*, m.user_name, count(l.like_id) as plike\n" +
+                "from post p\n" +
+                "         left join post_like l on p.post_id = l.post_id\n" +
+                "         join member m on m.USER_ID = p.user_id\n" +
+                "where p.post_id = ?\n" +
+                "group by l.post_id;";
+        Post post = null;
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, postId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                post = new Post(
+                        rs.getInt("post_id"),
+                        rs.getInt("user_id"),
+                        rs.getString("user_name"),
+                        rs.getString("category"),
+                        rs.getString("topic"),
+                        rs.getString("content"),
+                        rs.getInt("plike"),
+                        format.format(rs.getObject("timing", Timestamp.class))
+                );
+            }
+            return post;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String getCategoryById(int id) {
         String category = null;
         String sql = "select category from category where id = ?;";
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1,id);
+            ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 category = rs.getString("category");
             }
             return category;

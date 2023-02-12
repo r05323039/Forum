@@ -68,10 +68,11 @@ main {
         display: flex;
         flex-wrap: wrap;
         padding: 0.5rem;
-        .type {
+        border: 1px dotted blue;
+        .user {
           border: 1px solid red;
         }
-        .topic {
+        .date {
           border: 1px solid red;
         }
       }
@@ -79,23 +80,26 @@ main {
         display: flex;
         flex-wrap: wrap;
         padding: 0.5rem;
-
-        .user {
+        border: 1px dotted blue;
+        .category {
           border: 1px solid red;
           width:70%;
         }
-        .date {
+        .topic {
           border: 1px solid red;
           width:10%;
         }
-        .like {
+        .content {
           border: 1px solid red;
           width:10%;
         }
       }
       .d3{
         padding: 0.5rem;
-        .content{border: 1px solid red;}
+        border: 1px dotted blue;
+        .like{
+          border: 1px solid red;
+        }
       }
     }
   }

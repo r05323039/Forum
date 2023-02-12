@@ -15,9 +15,11 @@ create table collection_post
 DROP TABLE IF EXISTS collection_category;
 create table collection_category
 (
+    id          int auto_increment
+        primary key,
     user_id     int not null,
     category_id int not null,
-    constraint collection_category_pk
+    constraint collection_category_uk
         unique (user_id, category_id),
     constraint collection_category_category_id_fk
         foreign key (category_id) references elitebaby.category (id),

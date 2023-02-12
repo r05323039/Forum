@@ -1,10 +1,7 @@
 package forum.service;
-
 import forum.dao.CategoryDao;
 import forum.dao.CollectionDao;
 import forum.pojo.Category;
-
-
 import java.util.ArrayList;
 
 public class CategoryService {
@@ -15,6 +12,7 @@ public class CategoryService {
     public ArrayList<ArrayList<Category>> getAll() {
         ArrayList<Category> LCs = new ArrayList<>();
         ArrayList<Category> HCs = new ArrayList<>();
+
         ArrayList<Category> categories = categoryDao.selectAll();
         for (Category c : categories) {
             if (c.getLevel() == 0) {
@@ -28,9 +26,7 @@ public class CategoryService {
         Cs.add(HCs);
         return Cs;
     }
-
     public boolean collect(int userId, int categoryId) {
-
         if (collectionDao.check(userId, categoryId)) {
             collectionDao.remove(userId, categoryId);
         } else {
@@ -38,7 +34,6 @@ public class CategoryService {
         }
         return collectionDao.check(userId, categoryId);
     }
-
     public ArrayList<Category> getCollectedCategories(int userId){
         return categoryDao.selectCollected(userId);
     }

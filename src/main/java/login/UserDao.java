@@ -1,8 +1,7 @@
 package login;
+import forum.pojo.User;
 
 import java.sql.*;
-
-
 public class UserDao {
     private String URL = "jdbc:mysql://localhost:3306/elitebaby";
     private String USER = "ian";

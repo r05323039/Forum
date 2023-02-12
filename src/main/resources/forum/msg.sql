@@ -1,4 +1,5 @@
 ----------msg----------
+DROP TABLE IF EXISTS msg;
 create table msg
 (
     msg_id  int auto_increment
@@ -6,7 +7,7 @@ create table msg
     user_id int                                 not null,
     post_id int                                 not null,
     content text                                not null,
-    timimg  timestamp default CURRENT_TIMESTAMP not null,
+    timing  timestamp default CURRENT_TIMESTAMP not null,
     constraint msg_member_USER_ID_fk
         foreign key (user_id) references elitebaby.member (USER_ID),
     constraint msg_post_post_id_fk

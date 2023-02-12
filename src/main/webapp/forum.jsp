@@ -1,7 +1,7 @@
 <%@ page import="forum.pojo.Post" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="forum.pojo.Category" %>
-<%@ page import="login.User" %>
+<%@ page import="forum.pojo.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -70,7 +70,7 @@
                         <a href="http://localhost:8080/elitebaby/forum/home?order=<%=order%>&categoryId=<%=cc.getId()%>">
                             <span class="<%=cc.getImg()%> item"> <%=cc.getCategory()%></span>
                         </a>
-                        <span class="addCollections" id="<%=cc.getId()%>">收藏</span>
+                        <span class="addCollections" data-value="<%=cc.getId()%>">收藏</span>
                     </div>
                     <%
                             }
@@ -88,7 +88,7 @@
                     <a href="http://localhost:8080/elitebaby/forum/home?order=<%=order%>&categoryId=<%=lc.getId()%>">
                         <span class="<%=lc.getImg()%> item"> <%=lc.getCategory()%></span>
                     </a>
-                    <span class="addCollections" id="<%=lc.getId()%>">收藏</span>
+                    <span class="addCollections" data-value="<%=lc.getId()%>">收藏</span>
                 </div>
                 <%}%>
 
@@ -98,7 +98,7 @@
                     <a href="http://localhost:8080/elitebaby/forum/home?order=<%=order%>&categoryId=<%=hc.getId()%>">
                         <span class="<%=hc.getImg()%> item"> <%=hc.getCategory()%></span>
                     </a>
-                    <span class="addCollections" id="<%=hc.getId()%>">收藏</span>
+                    <span class="addCollections" data-value="<%=hc.getId()%>">收藏</span>
                 </div>
                 <%}%>
             </div>
@@ -109,34 +109,57 @@
                 ArrayList<Post> posts = (ArrayList<Post>) request.getAttribute("posts");
             %>
             <% for (Post p : posts) { %>
-            <article id="post">
+            <article>
                 <div class="d1">
-                    <div class="category" id="category">《<%=p.getCategory()%>》</div>
-                    <div class="topic" id="topic"><%=p.getTopic()%>
+                    <div class="user"><%=p.getUserName()%>
+                    </div>
+                    </br>
+                    <div class="date"><%=p.getTimestamp()%>(<%=p.getPostId()%>)
                     </div>
                 </div>
-                <div class="d2">
-                    <div class="user" id="user"><%=p.getUserId()%>
+                <div class="d2" data-value="<%=p.getPostId()%>">
+                    <div class="category">《<%=p.getCategory()%>》</div>
+                    <div class="topic"><%=p.getTopic()%>
                     </div>
-                    <div class="date" id="date"><%=p.getTimestamp()%>(<%=p.getPostId()%>)
-                    </div>
-                    <div class="like">
-                        <span class="spanlike like<%=p.getPostId()%>" id="<%=p.getPostId()%>">
-                            <i class="fa-solid fa-thumbs-up"></i>
-                            <span><%=p.getLike()%></span>
-                        </span>
-                    </div>
+                    <p class="content"><%=p.getContent()%>
+                    </p>
                 </div>
                 <hr/>
-                <div class="d3 post<%=p.getPostId()%>">
-                    <p class="content" id="content"><%=p.getContent()%>
-                    </p>
+                <div class="d3">
+                    <div class="like" data-value="<%=p.getPostId()%>">
+                        <i class="fa-solid fa-thumbs-up"></i>
+                        <span class="showLike"><%=p.getLike()%></span>
+                    </div>
                     <!--                    <img src=""/>-->
                 </div>
             </article>
             <%}%>
-            <div id="post-container"></div>
+            <template id="post-template">
+                <article>
+                    <div class="d1">
+                        <div class="user"></div>
+                        </br>
+                        <div class="date"></div>
+                    </div>
+                    <div class="d2" data-value="">
+                        <div class="category">《》</div>
+                        <div class="topic"></div>
+                        <p class="content"></p>
+                    </div>
+                    <hr/>
+                    <div class="d3">
+                        <div class="like" data-value="">
+                            <i class="fa-solid fa-thumbs-up"></i>
+                            <span class="showLike"></span>
+                        </div>
+                        <!--                    <img src=""/>-->
+                    </div>
+                </article>
+            </template>
+
+
         </section>
+        <div class="test"></div>
     </main>
 </div>
 
@@ -146,38 +169,36 @@
 </body>
 
 <script>
-    <%--1.jsp每篇迴圈產生的category及post要藏id(p.getPostId())，方便JS抓--%>
-    // const cate5 = document.querySelector(".category5");
-    // console.log(cate5);
-    // const cate8 = document.querySelector(".category8");
-    // console.log(cate8);
-    // const post18 = document.querySelector(".post18");
-    // console.log(post18);
-    // const like18 = document.querySelector(".like18");
-    // console.log(like18);
+    likeListener();
 
-    <%--2.按like時，JS抓postId組網址，fetch(forum/likeclick)，後端JSON字串傳遞結果，false移轉登入，number更新讚數 --%>
-    const likes = document.querySelectorAll(".spanlike");
-    for (const like of likes) {
-        const secondSpan = like.querySelector(":nth-child(2)");
-        like.addEventListener("click", () => {
-            fetch("http://localhost:8080/elitebaby/forum/likeclick?postId=" + like.id)
-                .then(response => response.text())
-                .then(text => JSON.parse(text))
-                .then(data => {
-                    console.log(data);
-                    if (data === "login") {
-                        window.location.href = "http://localhost:8080/elitebaby/login.jsp";
-                    }
-                    if (typeof data === "number") {
-                        secondSpan.innerText = data;
-                    }
-                })
-        })
-    }//end
+    //讓like添加監聽器click
+    function likeListener() {
+        const likes = document.querySelectorAll(".like");
+        // console.log(likes);
+        for (const like of likes) {
+            like.addEventListener("click", () => {
+                const showLike = like.querySelector(".showLike");
+                // console.log(showLike);
+                // console.log(like.dataset.value);
+                fetch("http://localhost:8080/elitebaby/forum/likeclick?postId=" + like.dataset.value)
+                    .then(response => response.text())
+                    .then(text => JSON.parse(text))
+                    .then(data => {
+                        // console.log(data);
+                        if (data === "login") {
+                            window.location.href = "http://localhost:8080/elitebaby/login.jsp";
+                        }
+                        if (typeof data === "number") {
+                            showLike.innerText = data;
+                        }
+                    })
+            })
+        }
+    }
 
-    //3.收藏版塊，點選自己移除
+    //收藏版塊，點選自己移除
     const cloneBlock = document.querySelector(".cloneBlock");
+
     function removeCloneItem() {
         // console.log("remove監聽器產生");
         const cloneItems = cloneBlock.querySelectorAll(".items");
@@ -187,13 +208,13 @@
             })
         }
     }
+
     removeCloneItem();
-    //4.category板塊for迴圈產生收藏功能
+    //category產生收藏功能
     const collections = document.querySelectorAll(".addCollections")
     for (const coll of collections) {
-        // console.log(coll.id);
         coll.addEventListener("click", () => {
-            fetch("http://localhost:8080/elitebaby/forum/categoryCollect?categoryId=" + coll.id)
+            fetch("http://localhost:8080/elitebaby/forum/addCategoryCollect?categoryId=" + coll.dataset.value)
                 .then(response => response.text())
                 .then(text => JSON.parse(text))
                 .then(data => {
@@ -204,7 +225,7 @@
                     if (data === true) {
                         // window.alert("成功收藏")
                         //產生收藏文章 clone
-                        const cloneCateId = ".category" + coll.id;
+                        const cloneCateId = ".category" + coll.dataset.value;
                         const cloneCate = cloneBlock.querySelector(cloneCateId);
                         if (cloneCate == null) {
                             const collClone = coll.parentElement.cloneNode(true);
@@ -215,12 +236,41 @@
                     if (data === false) {
                         // window.alert("取消收藏")
                         //移除收藏文章 clone
-                        const cloneCateId = ".category" + coll.id;
+                        const cloneCateId = ".category" + coll.dataset.value;
                         const cloneCate = cloneBlock.querySelector(cloneCateId);
                         if (cloneCate != null) {
                             cloneCate.remove();
                         }
                     }
+                })
+        })
+    }
+    //點文章d2區塊，可打開文章
+    const template = document.querySelector("#post-template").content;//抓取文章模板
+    const postsD2 = document.querySelectorAll(".d2")//選取所有文章的d2區塊
+    for (const p of postsD2) {
+        p.addEventListener("click", () => {
+            fetch("http://localhost:8080/elitebaby/forum/postBean?postId=" + p.dataset.value)
+                .then(response => response.text())
+                .then(text => JSON.parse(text))
+                .then(data => {
+                    console.log(data); //OK
+                    const post = data.post;
+                    const msgs = data.msgs;
+                    const panel = document.querySelector(".right");
+                    panel.innerText = '';
+                    var postClone = template.cloneNode(true);
+                    postClone.querySelector(".user").textContent = post.userName;
+                    postClone.querySelector(".date").textContent = post.timestamp;
+                    postClone.querySelector(".d2").setAttribute('data-value', post.postId);
+                    postClone.querySelector(".category").textContent = "《"+post.category+"》";
+                    postClone.querySelector(".topic").textContent = post.topic;
+                    postClone.querySelector(".content").textContent = post.content;
+                    postClone.querySelector(".d3").setAttribute('data-value', post.postId);
+                    postClone.querySelector(".like").setAttribute('data-value', post.postId);
+                    postClone.querySelector(".showLike").textContent = post.like;
+                    panel.appendChild(postClone);
+                    likeListener();
                 })
         })
     }

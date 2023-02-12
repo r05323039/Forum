@@ -3,9 +3,10 @@ package forum.controller;
 import com.alibaba.fastjson.JSON;
 import forum.pojo.Category;
 import forum.pojo.Post;
+import forum.pojo.PostBean;
 import forum.service.CategoryService;
 import forum.service.PostService;
-import login.User;
+import forum.pojo.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -52,7 +53,6 @@ public class ForumServlet extends BaseServlet {
             ArrayList<Category> collectedCategories = categoryService.getCollectedCategories(userId);
             request.setAttribute("CCs", collectedCategories);
         }
-
         //傳送
         request.getRequestDispatcher("/forum.jsp").forward(request, response);
     }
@@ -73,33 +73,35 @@ public class ForumServlet extends BaseServlet {
         int userId = user.getUserId();
         int postId = Integer.parseInt(request.getParameter("postId"));
         int count = postService.likeClick(postId, userId);
-
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(String.valueOf(count));
+        responseJOSN(response, String.valueOf(count));
     }
 
+    //載入USER已加入的收藏話題
     public void collectedCategories(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         int userId = user.getUserId();
         ArrayList<Category> collectedCategories = categoryService.getCollectedCategories(userId);
         String J_categories = JSON.toJSONString(collectedCategories);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(String.valueOf(J_categories));
-        //OK
+        responseJOSN(response, J_categories);
     }
 
-    public void categoryCollect(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    //加入收藏話題
+    public void addCategoryCollect(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         int userId = user.getUserId();
         int categoryId = Integer.parseInt(request.getParameter("categoryId"));
         boolean exist = categoryService.collect(userId, categoryId);
-
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(String.valueOf(exist));
+        responseJOSN(response, String.valueOf(exist));
     }
+
+    //獲得文章及留言串
+    public void postBean(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int postId = Integer.parseInt(request.getParameter("postId"));
+        PostBean postBean = postService.getPostBean(postId);
+        String s = JSON.toJSONString(postBean);
+        responseJOSN(response, s);//OK
+    }
+
 }
