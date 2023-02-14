@@ -142,7 +142,7 @@
                         <div class="date"></div>
                     </div>
                     <div class="d2" data-value="">
-                        <div class="category">《》</div>
+                        <div class="category"></div>
                         <div class="topic"></div>
                         <p class="content"></p>
                     </div>
@@ -156,10 +156,27 @@
                     </div>
                 </article>
             </template>
-
-
+            <template id="msg-template">
+                <article>
+                    <div class="d1">
+                        <div class="user"></div>
+                        </br>
+                        <div class="date"></div>
+                    </div>
+                    <div class="d2" data-value="">
+                        <p class="content"></p>
+                    </div>
+                    <hr/>
+                    <div class="d3">
+                        <div class="m-like" data-value="">
+                            <i class="fa-solid fa-thumbs-up"></i>
+                            <span class="showLike"></span>
+                        </div>
+                        <!--                    <img src=""/>-->
+                    </div>
+                </article>
+            </template>
         </section>
-        <div class="test"></div>
     </main>
 </div>
 
@@ -169,9 +186,7 @@
 </body>
 
 <script>
-    likeListener();
-
-    //讓like添加監聽器click
+    //所有post的like添加監聽器click
     function likeListener() {
         const likes = document.querySelectorAll(".like");
         // console.log(likes);
@@ -196,10 +211,32 @@
         }
     }
 
-    //收藏版塊，點選自己移除
-    const cloneBlock = document.querySelector(".cloneBlock");
+    likeListener();
 
-    function removeCloneItem() {
+    //所有msg的like添加監聽器click
+    function likeMsgListener() {
+        const likes = document.querySelectorAll(".m-like");
+        for (const like of likes) {
+            like.addEventListener("click", () => {
+                const showLike = like.querySelector(".showLike");
+                fetch("http://localhost:8080/elitebaby/msg/likeclick?msgId=" + like.dataset.value)
+                    .then(response => response.text())
+                    .then(text => JSON.parse(text))
+                    .then(data => {
+                        if (data === "login") {
+                            window.location.href = "http://localhost:8080/elitebaby/login.jsp";
+                        }
+                        if (typeof data === "number") {
+                            showLike.innerText = data;
+                        }
+                    })
+            })
+        }
+    }
+
+    //收藏區產生新版塊後，添加點選自己移除的監聽器
+    function ClonedCategoryRemoveListener() {
+        const cloneBlock = document.querySelector(".cloneBlock");
         // console.log("remove監聽器產生");
         const cloneItems = cloneBlock.querySelectorAll(".items");
         for (let cloneItem of cloneItems) {
@@ -209,70 +246,100 @@
         }
     }
 
-    removeCloneItem();
+    ClonedCategoryRemoveListener();
+
     //category產生收藏功能
-    const collections = document.querySelectorAll(".addCollections")
-    for (const coll of collections) {
-        coll.addEventListener("click", () => {
-            fetch("http://localhost:8080/elitebaby/forum/addCategoryCollect?categoryId=" + coll.dataset.value)
-                .then(response => response.text())
-                .then(text => JSON.parse(text))
-                .then(data => {
-                    // console.log(data);
-                    if (data === "login") {
-                        window.location.href = "http://localhost:8080/elitebaby/login.jsp";
-                    }
-                    if (data === true) {
-                        // window.alert("成功收藏")
-                        //產生收藏文章 clone
-                        const cloneCateId = ".category" + coll.dataset.value;
-                        const cloneCate = cloneBlock.querySelector(cloneCateId);
-                        if (cloneCate == null) {
-                            const collClone = coll.parentElement.cloneNode(true);
-                            cloneBlock.append(collClone);
-                            removeCloneItem();
+    function categoryCollectedListener() {
+        const cloneBlock = document.querySelector(".cloneBlock");
+        const collections = document.querySelectorAll(".addCollections")
+        for (const coll of collections) {
+            coll.addEventListener("click", () => {
+                fetch("http://localhost:8080/elitebaby/forum/addCategoryCollect?categoryId=" + coll.dataset.value)
+                    .then(response => response.text())
+                    .then(text => JSON.parse(text))
+                    .then(data => {
+                        // console.log(data);
+                        if (data === "login") {
+                            window.location.href = "http://localhost:8080/elitebaby/login.jsp";
                         }
-                    }
-                    if (data === false) {
-                        // window.alert("取消收藏")
-                        //移除收藏文章 clone
-                        const cloneCateId = ".category" + coll.dataset.value;
-                        const cloneCate = cloneBlock.querySelector(cloneCateId);
-                        if (cloneCate != null) {
-                            cloneCate.remove();
+                        if (data === true) {
+                            //產生收藏文章 clone
+                            const cloneCateId = ".category" + coll.dataset.value;
+                            const cloneCate = cloneBlock.querySelector(cloneCateId);
+                            if (cloneCate == null) {
+                                const collClone = coll.parentElement.cloneNode(true);
+                                cloneBlock.append(collClone);
+                                //clone板塊添加自我移除
+                                ClonedCategoryRemoveListener();
+                            }
                         }
-                    }
-                })
-        })
+                        if (data === false) {
+                            //移除收藏文章 clone
+                            const cloneCateId = ".category" + coll.dataset.value;
+                            const cloneCate = cloneBlock.querySelector(cloneCateId);
+                            if (cloneCate != null) {
+                                cloneCate.remove();
+                            }
+                        }
+                    })
+            })
+        }
     }
+
+    categoryCollectedListener();
+
+
     //點文章d2區塊，可打開文章
-    const template = document.querySelector("#post-template").content;//抓取文章模板
-    const postsD2 = document.querySelectorAll(".d2")//選取所有文章的d2區塊
-    for (const p of postsD2) {
-        p.addEventListener("click", () => {
-            fetch("http://localhost:8080/elitebaby/forum/postBean?postId=" + p.dataset.value)
-                .then(response => response.text())
-                .then(text => JSON.parse(text))
-                .then(data => {
-                    console.log(data); //OK
-                    const post = data.post;
-                    const msgs = data.msgs;
-                    const panel = document.querySelector(".right");
-                    panel.innerText = '';
-                    var postClone = template.cloneNode(true);
-                    postClone.querySelector(".user").textContent = post.userName;
-                    postClone.querySelector(".date").textContent = post.timestamp;
-                    postClone.querySelector(".d2").setAttribute('data-value', post.postId);
-                    postClone.querySelector(".category").textContent = "《"+post.category+"》";
-                    postClone.querySelector(".topic").textContent = post.topic;
-                    postClone.querySelector(".content").textContent = post.content;
-                    postClone.querySelector(".d3").setAttribute('data-value', post.postId);
-                    postClone.querySelector(".like").setAttribute('data-value', post.postId);
-                    postClone.querySelector(".showLike").textContent = post.like;
-                    panel.appendChild(postClone);
-                    likeListener();
-                })
-        })
+    function postEntranceListener() {
+        const templatePost = document.querySelector("#post-template").content;
+        const templateMsg = document.querySelector("#msg-template").content;
+        const postsD2 = document.querySelectorAll(".d2")
+        for (const p of postsD2) {
+            p.addEventListener("click", () => {
+                fetch("http://localhost:8080/elitebaby/forum/postBean?postId=" + p.dataset.value)
+                    .then(response => response.text())
+                    .then(text => JSON.parse(text))
+                    .then(data => {
+                        // console.log(data); //OK
+                        const post = data.post;
+                        const msgs = data.msgs;
+                        const length = data.dataLength;
+
+                        const panel = document.querySelector(".right");
+                        panel.innerText = '';
+
+                        const postClone = templatePost.cloneNode(true);
+                        postClone.querySelector(".user").textContent = post.userName;
+                        postClone.querySelector(".date").textContent = post.timestamp;
+                        postClone.querySelector(".d2").setAttribute('data-value', post.postId);
+                        postClone.querySelector(".category").textContent = "《" + post.category + "》";
+                        postClone.querySelector(".topic").textContent = post.topic;
+                        postClone.querySelector(".content").textContent = post.content;
+                        postClone.querySelector(".d3").setAttribute('data-value', post.postId);
+                        postClone.querySelector(".like").setAttribute('data-value', post.postId);
+                        postClone.querySelector(".showLike").textContent = post.like;
+                        panel.appendChild(postClone);
+                        likeListener();
+
+                        for (let i = 0; i < msgs.length; i++) {
+                            const msgClone = templateMsg.cloneNode(true);
+                            msgClone.querySelector(".user").textContent = msgs[i].userName;
+                            msgClone.querySelector(".date").textContent = msgs[i].timestamp;
+                            msgClone.querySelector(".d2").setAttribute('data-value', msgs[i].msgId);
+                            msgClone.querySelector(".content").textContent = msgs[i].content;
+                            msgClone.querySelector(".d3").setAttribute('data-value', msgs[i].msgId);
+                            msgClone.querySelector(".m-like").setAttribute('data-value', msgs[i].msgId);
+                            msgClone.querySelector(".showLike").textContent = msgs[i].like;
+                            panel.appendChild(msgClone);
+                        }
+                        likeMsgListener();
+                    })
+            })
+        }
     }
+
+    postEntranceListener();
+
+
 </script>
 </html>

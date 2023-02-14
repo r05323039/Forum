@@ -1,4 +1,3 @@
-# table category
 DROP TABLE IF EXISTS category;
 create table category
 (
@@ -12,7 +11,7 @@ create table category
     constraint checklevel
         check (`level` in (0, 1, 2))
 );
-# insert category
+
 insert into category (category, img, level)
 VALUES ('育嬰', 'fa-solid fa-baby', 0),
        ('出遊', 'fa-solid fa-plane-departure', 0),
@@ -24,7 +23,7 @@ VALUES ('育嬰', 'fa-solid fa-baby', 0),
        ('好康福利','fa-solid fa-venus-mars',1),
        ('會員專區', 'fa-solid fa-money-check-dollar', 2);
 
-# table post
+
 DROP TABLE IF EXISTS post;
 create table post
 (
@@ -40,10 +39,10 @@ create table post
     constraint post_member_id_fk
         foreign key (user_id) references elitebaby.member (USER_ID)
 );
-# varchar被外鍵，要先index
+
 create index post_category_index
     on elitebaby.post (category);
-# insert post
+
 insert into post (user_id, category, topic, content)
 VALUES (1, '健康', '多吃蔬菜有益健康', ' '),
        (2, '出遊', '蜜月旅行攻略', ' '),
@@ -65,13 +64,6 @@ VALUES (1, '健康', '多吃蔬菜有益健康', ' '),
        (2, '房地產', '央行預測下半年減緩升息', ' '),
        (2, '會員專區', 'elitebaby會員獨享', ' ');
 
-# content 填充
-update post
-set content = '123'
-where 1 = 1;
-update post
-set content ='Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.長用那其張傷作良落希地國天高？起們表皮。期間同院時發教你；食總寶賣教件哥商，研問臺世：稱布濟費天樹明大著、就管圖了通好務以麼己些在說花帶子德朋求中，化果一產內男致？出寫提們卻一！中照食。國華星後然，大同省，大應事事故明機麼好微熱有。一手也在……見在黃今國的老開首先趣夜、角似馬好電之的後生寫哥統生個著究任夫從不老外人條個試政寫，的音童外要最去。你答查；不我事不的起會經子面式小在民是商這見下，體人黨發的屋在造我的費創花種爸酒雲候星。心不賽的，社跑其和深存看兒局電公種深獨戰息行機裡型詩管關富黃時，我進加能向除投在數要更代花在個何面頭人千大新幾第！何在方一中意裡言生找仍這重行於教不人建些大能。的我設全神事、式體問般新民謝最須雄減生望看歡建他太上界兒展國布士。'
-where 1 = 1;
 
 # ---------post_images----------
 create table post_images
@@ -116,3 +108,19 @@ create table post_reports
         foreign key (post_id) references elitebaby.post (post_id)
 );
 
+--
+delete
+from msg
+where 1 = 1;
+alter table msg
+    auto_increment = 0;
+delete
+from post_like
+where 1 = 1;
+alter table post_like
+    auto_increment = 0;
+delete
+from post
+where 1 = 1;
+alter table post
+    auto_increment = 0;

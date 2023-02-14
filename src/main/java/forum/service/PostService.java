@@ -1,15 +1,23 @@
 package forum.service;
+
+import forum.dao.CategoryDao;
 import forum.dao.MsgDao;
 import forum.dao.PostDao;
 import forum.dao.PostLikeDao;
+import forum.pojo.Category;
 import forum.pojo.Msg;
 import forum.pojo.Post;
 import forum.pojo.PostBean;
+import org.junit.Test;
+
 import java.util.ArrayList;
+
 public class PostService {
+    private CategoryDao categoryDao = new CategoryDao();
     private PostDao postDao = new PostDao();
     private PostLikeDao postLikeDao = new PostLikeDao();
     private MsgDao msgDao = new MsgDao();
+
     public ArrayList<Post> getAll(boolean order, String categoryId, String topic) {
         ArrayList<Post> posts = new ArrayList<>();
         if (order) {
@@ -27,6 +35,7 @@ public class PostService {
         }
         return posts;
     }
+
     public ArrayList<Post> categoryFilter(ArrayList<Post> posts, String category) {
         ArrayList<Post> filteredPosts = new ArrayList<>();
         for (Post p : posts) {
@@ -35,6 +44,7 @@ public class PostService {
         }
         return filteredPosts;
     }
+
     public ArrayList<Post> topicFilter(ArrayList<Post> posts, String topic) {
         ArrayList<Post> filteredPosts = new ArrayList<>();
         for (Post p : posts) {
@@ -43,12 +53,15 @@ public class PostService {
         }
         return filteredPosts;
     }
+
     public void likeGenerator() {
-        postLikeDao.generator();
+        postLikeDao.generator(postDao.getPostIds());
     }
+
     public void likeClean() {
         postLikeDao.clean();
     }
+
     public int likeClick(int postId, int userId) {
         if (postLikeDao.check(postId, userId)) {
             postLikeDao.minus(postId, userId);
@@ -57,13 +70,25 @@ public class PostService {
         }
         return postLikeDao.count(postId);
     }
-    public PostBean getPostBean(int postId){
+
+    public PostBean getPostBean(int postId) {
         Post post = postDao.getPostById(postId);
         ArrayList<Msg> msgs = msgDao.selectMsgsIdAsc(postId);
+        int length = msgs.size();
         PostBean postBean = new PostBean();
         postBean.setPost(post);
         postBean.setMsgs(msgs);
+        postBean.setDataLength(length);
         return postBean;
+    }
+
+    public void PostGenerator() {
+        ArrayList<Category> categories = categoryDao.selectAll();
+        ArrayList<String> categoryName = new ArrayList<>();
+        for (Category c : categories) {
+            categoryName.add(c.getCategory());
+        }
+        postDao.postGenerator(categoryName);
     }
 }
 

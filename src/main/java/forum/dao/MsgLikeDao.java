@@ -1,11 +1,8 @@
 package forum.dao;
 
 import java.sql.*;
-import java.util.ArrayList;
 
-
-public class PostLikeDao {
-
+public class MsgLikeDao {
     private String URL = DaoId.URL;
     private String USER = DaoId.USER;
     private String PASSWORD = DaoId.PASSWORD;
@@ -18,15 +15,13 @@ public class PostLikeDao {
         }
     }
 
-    public void generator(ArrayList<Integer> ids) {
-        int length = ids.size();
-        int begin = ids.get(0);
-        String sql = "insert into post_like(post_id, user_id) values (?,?);";
+    public void generator() {
+        String sql = "insert into msg_like(msg_id, user_id) values (?,?);";
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement ps = connection.prepareStatement(sql)) {
-            for (int i = 0; i < 200; i++) {
-                ps.setInt(1, (int) (Math.random() * length) + begin);
-                ps.setInt(2, (int) (Math.random() * 9) + 1);
+            for (int i = 0; i < 50; i++) {
+                ps.setInt(1, (int) (Math.random() * 19) + 1);
+                ps.setInt(2, (int) (Math.random() * 5) + 1);
                 ps.addBatch();
             }
             ps.executeBatch();
@@ -35,7 +30,7 @@ public class PostLikeDao {
     }
 
     public void clean() {
-        String sql = "delete from post_like where 1=1;";
+        String sql = "delete from msg_like where 1=1;";
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.execute();
@@ -43,33 +38,33 @@ public class PostLikeDao {
         }
     }
 
-    public void plus(int postId, int userId) {
-        String sql = "insert into post_like(post_id, user_id) values (?,?);";
+    public void plus(int msgId, int userId) {
+        String sql = "insert into msg_like(msg_id, user_id) values (?,?);";
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, postId);
+            ps.setInt(1, msgId);
             ps.setInt(2, userId);
             ps.execute();
         } catch (SQLException e) {
         }
     }
 
-    public void minus(int postId, int userId) {
-        String sql = "delete from post_like where post_id = ? and user_id = ?;";
+    public void minus(int msgId, int userId) {
+        String sql = "delete from msg_like where msg_id = ? and user_id = ?;";
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, postId);
+            ps.setInt(1, msgId);
             ps.setInt(2, userId);
             ps.execute();
         } catch (SQLException e) {
         }
     }
 
-    public boolean check(int postId, int userId) {
-        String sql = "select * from post_like where post_id = ? and user_id = ?;";
+    public boolean check(int msgId, int userId) {
+        String sql = "select * from msg_like where msg_id = ? and user_id = ?;";
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, postId);
+            ps.setInt(1, msgId);
             ps.setInt(2, userId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -81,17 +76,17 @@ public class PostLikeDao {
         }
     }
 
-    public int count(int postId) {
+    public int count(int msgId) {
         int like = 0;
-        String sql = "select post_id, count(*) as plike from post_like\n" +
-                "where post_id = ?\n" +
-                "group by post_id;";
+        String sql = "select msg_id, count(*) as mlike from msg_like\n" +
+                "where msg_id = ?\n" +
+                "group by msg_id;";
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, postId);
+            ps.setInt(1, msgId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                like = rs.getInt("plike");
+                like = rs.getInt("mlike");
             }
             return like;
         } catch (SQLException e) {

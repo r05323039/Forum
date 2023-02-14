@@ -5,6 +5,7 @@ import forum.pojo.Category;
 import forum.pojo.Post;
 import forum.pojo.PostBean;
 import forum.service.CategoryService;
+import forum.service.MsgService;
 import forum.service.PostService;
 import forum.pojo.User;
 
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 public class ForumServlet extends BaseServlet {
     private CategoryService categoryService = new CategoryService();
     private PostService postService = new PostService();
+    private MsgService msgService = new MsgService();
 
 
     public void home(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -57,16 +59,7 @@ public class ForumServlet extends BaseServlet {
         request.getRequestDispatcher("/forum.jsp").forward(request, response);
     }
 
-    public void like(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        postService.likeGenerator();
-        response.sendRedirect("http://localhost:8080/elitebaby/forum/home");
-    }
-
-    public void likeclean(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        postService.likeClean();
-        response.sendRedirect("http://localhost:8080/elitebaby/forum/home");
-    }
-
+    //文章按讚
     public void likeclick(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
@@ -76,7 +69,8 @@ public class ForumServlet extends BaseServlet {
         responseJOSN(response, String.valueOf(count));
     }
 
-    //載入USER已加入的收藏話題
+
+    //獲取USER已加入的收藏話題
     public void collectedCategories(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
@@ -101,7 +95,7 @@ public class ForumServlet extends BaseServlet {
         int postId = Integer.parseInt(request.getParameter("postId"));
         PostBean postBean = postService.getPostBean(postId);
         String s = JSON.toJSONString(postBean);
-        responseJOSN(response, s);//OK
+        responseJOSN(response, s);
     }
 
 }

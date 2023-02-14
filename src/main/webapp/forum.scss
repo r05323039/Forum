@@ -5,25 +5,24 @@
 header {
   font-size: 50px;
   text-align: center;
-  background-color: pink  ;
-
+  background-color: pink;
 }
-.sticky{
+.sticky {
   display: flex;
   flex-wrap: wrap;
   border: 1px dotted black;
-  .search{
-    margin: 0 2rem ;
+  .search {
+    margin: 0 2rem;
     width: 60%;
   }
-  .switch{
-    width:10%;
+  .switch {
+    width: 10%;
     border: 1px red solid;
   }
-  .post{
+  .post {
     width: 10%;
   }
-  .follow{
+  .follow {
     width: 10%;
   }
 }
@@ -36,9 +35,9 @@ main {
     background-color: antiquewhite;
     width: 20%;
 
-    .category{
+    .category {
       border: 1px solid blue;
-      .items{
+      .items {
         border: 1px sandybrown solid;
         padding: 1rem;
       }
@@ -63,7 +62,7 @@ main {
     width: 70%;
     article {
       margin: 1rem;
-      background-color:azure;
+      background-color: azure;
       .d1 {
         display: flex;
         flex-wrap: wrap;
@@ -83,22 +82,27 @@ main {
         border: 1px dotted blue;
         .category {
           border: 1px solid red;
-          width:70%;
+          width: 70%;
         }
         .topic {
           border: 1px solid red;
-          width:10%;
+          width: 10%;
         }
         .content {
           border: 1px solid red;
-          width:10%;
+          width: 10%;
+          overflow: hidden;
+          height: 50px;
         }
       }
-      .d3{
+      .d3 {
         padding: 0.5rem;
         border: 1px dotted blue;
-        .like{
+        .like {
           border: 1px solid red;
+        }
+        .m-like {
+          border: 2px solid red;
         }
       }
     }
