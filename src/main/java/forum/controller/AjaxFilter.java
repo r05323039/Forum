@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebFilter({"/forum/likeclick","/forum/addCategoryCollect","/msg/*"})
+@WebFilter({"/forum/likeclick","/forum/addCategoryCollect","/msg/*","/publish/*"})
 public class AjaxFilter implements Filter {
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException {

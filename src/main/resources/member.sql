@@ -1,8 +1,9 @@
-create table member
+create table elitebaby.member
 (
     USER_ID   int auto_increment
         primary key,
-    user_name varchar(20) null
+    user_name varchar(20) null,
+    password  varchar(50) not null
 );
 
 insert into member (user_name) values ('名1'),

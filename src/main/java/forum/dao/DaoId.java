@@ -1,9 +1,9 @@
 package forum.dao;
 
 public class DaoId {
-    final static String URL = "jdbc:mysql://localhost:3306/elitebaby";
-    final static String USER = "ian";
-    final static String PASSWORD = "yi711044";
+    public final static String URL = "jdbc:mysql://localhost:3306/elitebaby";
+    public final static String USER = "root";
+    public final static String PASSWORD = "password";
 
     static String content = "當孩子年齡越來越大，勢必會越來越有自己的想法，如果仍慣性地使用過去對待「小小孩」的方式跟他們互動，他們只會從父母那兒感受到被監控、被批判的束縛與壓力，進而想要逃離，去呼吸自由的空氣。\n" +
             "即便這些監控、批判的出發點是基於關心與善意，但在得不到尊重與認可的情況下，孩子選擇轉身離去，投入同溫層的懷抱，就成了必然的結果。\n" +

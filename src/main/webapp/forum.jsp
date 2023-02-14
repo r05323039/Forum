@@ -19,39 +19,34 @@
 </head>
 <body>
 <header>Header</header>
+
+<div class="sticky">
+    <div class="search">
+        <span>歡迎 USERNAME</span>
+        <span>積分: 100</span>
+    </div>
+    <div id="publish"><img src="" alt="圖"/>我要發文</div>
+    <div class="follow"><img src="" alt="圖"/>收藏</div>
+</div>
+
+
 <% boolean order = (boolean) request.getAttribute("order");
     String showOrder = (order) ? "熱門" : "最新";
     String categoryId = (String) request.getAttribute("categoryId");
 %>
-
-
-<div class="sticky">
-    <div class="search">
-        <a href="http://localhost:8080/elitebaby/forum/like" style="display: none">GetLike</a>
-        <a href="http://localhost:8080/elitebaby/forum/likeclean" style="display: none">CleanLike</a>
-        <span>歡迎 USERNAME</span>
-        <span>積分: 100</span>
-    </div>
-
-    <div class="switch">文章排序:<a
-            href="http://localhost:8080/elitebaby/forum/home?order=<%=order%>&switch=1"><%=showOrder%>
-    </a></div>
-    <div class="post"><img src="" alt="圖"/>我要發文</div>
-    <div class="follow"><img src="" alt="圖"/>收藏</div>
-</div>
-</div>
 <div class="before-main">
     <main>
         <section class="left">
+            <div class="switch">文章排序:
+                <a href="http://localhost:8080/elitebaby/forum/home?order=<%=order%>&switch=1"><%=showOrder%>
+                </a>
+            </div>
             <form style="display: inline-block" action="http://localhost:8080/elitebaby/forum/home">
                 <input class="input-text" type="text" placeholder="文字搜尋" name="topic"/>
                 <input type="hidden" name="order" value="<%=order%>">
                 <input type="hidden" name="categoryId" value="<%=categoryId%>">
                 <input type="submit" value="標題搜尋">
             </form>
-
-            <%--            <div class="cloneBlock category">--%>
-            <%--            </div>--%>
 
             <br/>
             <br/>
@@ -179,10 +174,6 @@
         </section>
     </main>
 </div>
-
-<form action="/forumServlet">
-
-</form>
 </body>
 
 <script>
@@ -340,6 +331,12 @@
 
     postEntranceListener();
 
+
+    //發文
+    const publish = document.querySelector("#publish");
+    publish.addEventListener("click",()=>{
+        window.location.href="http://localhost:8080/elitebaby/publish.html"
+    })
 
 </script>
 </html>

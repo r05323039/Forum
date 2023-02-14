@@ -1,11 +1,14 @@
 package login;
+
+import forum.dao.DaoId;
 import forum.pojo.User;
 
 import java.sql.*;
+
 public class UserDao {
     private String URL = "jdbc:mysql://localhost:3306/elitebaby";
-    private String USER = "ian";
-    private String PASSWORD = "yi711044";
+    private String USER = DaoId.USER;
+    private String PASSWORD = DaoId.PASSWORD;
 
     static {
         try {
@@ -30,6 +33,22 @@ public class UserDao {
                         rs.getString("password"));
             }
             return user;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String userNameById(int userId) {
+        String userName = null;
+        String sql = "select user_name from member where USER_ID = ?;";
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                userName = rs.getString("user_name");
+            }
+            return userName;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
