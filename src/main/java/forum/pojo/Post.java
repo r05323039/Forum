@@ -1,7 +1,9 @@
 package forum.pojo;
+
 import lombok.Data;
 
 import java.util.List;
+
 @Data
 public class Post {
     private int postId;
@@ -10,10 +12,10 @@ public class Post {
     private String category;
     private String topic;
     private String content;
-    private List<PostImage> imgsInPost;
-    private PostImage preview;
     private int like;
-    String timestamp;
+    private String imagePath;
+    private String[] imagesPath;
+    private String timestamp;
 
 
     public Post(int postId, int userId, String userName, String category, String topic, String content, int like, String timestamp) {
