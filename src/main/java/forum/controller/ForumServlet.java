@@ -35,7 +35,7 @@ public class ForumServlet extends BaseServlet {
         }
         String categoryId = request.getParameter("categoryId");
         String topic = request.getParameter("topic");
-        System.out.println("order:" + order + ", categoryId:" + categoryId + ", topic:" + topic);
+//        System.out.println("order:" + order + ", categoryId:" + categoryId + ", topic:" + topic);
         //呼叫+封裝
         ArrayList<Post> posts = postService.getAll(order, categoryId, topic);
         request.setAttribute("posts", posts);

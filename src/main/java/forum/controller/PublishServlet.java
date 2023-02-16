@@ -2,11 +2,11 @@ package forum.controller;
 
 import com.alibaba.fastjson.JSON;
 import forum.pojo.FormBean;
+import forum.pojo.Post;
 import forum.pojo.User;
+import forum.service.PostService;
 import forum.service.PublishService;
-import org.apache.commons.io.IOUtils;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import javax.servlet.annotation.MultipartConfig;
@@ -25,6 +25,8 @@ import java.util.Collection;
 public class PublishServlet extends BaseServlet {
     private PublishService publishService = new PublishService();
 
+    private PostService postService = new PostService();
+
     public void getForm(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
@@ -36,36 +38,43 @@ public class PublishServlet extends BaseServlet {
     }
 
     public void submit(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-//        request.setCharacterEncoding("UTF-8");
-//        String topic = request.getParameter("topic");
-//        String content = request.getParameter("content");
-//        Part p = request.getPart("image");//正常
-//        InputStream in = p.getInputStream();
-//        OutputStream out = new FileOutputStream("d:/img/" +  p.getSubmittedFileName());
-//        System.out.println(in);
-//        IOUtils.copy(in, out);
-
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        int userId = user.getUserId();
+        String category = request.getParameter("category");
+        String topic = request.getParameter("topic");
+        String content = request.getParameter("content");
+        Post post = new Post(userId, category, topic, content);//封裝Post參數
 
         Collection<Part> parts = request.getParts();
+        ArrayList<InputStream> ins = new ArrayList<>();
         for (Part p : parts) {
-//            System.out.println(p.getName());
             if (!p.getName().equals("image")) {
                 continue;
             }
             String fileName = p.getSubmittedFileName();
-//            System.out.println("fileName:" + fileName);
             if (fileName == null || fileName.isEmpty()) {
                 continue;
             }
-            InputStream in = p.getInputStream();
-//            System.out.println("in:" + in);
-            int r = (int) (Math.random() * 1000);
-            OutputStream out = new FileOutputStream("d:/img/" + r + "_" + fileName);
-            IOUtils.copy(in, out);
-            out.flush();
-            out.close();
-            in.close();
+            ins.add(p.getInputStream());
         }
+        publishService.submit(post, ins);
+        response.sendRedirect("http://localhost:8080/elitebaby/forum/home");
+    }
+
+    public void aaa(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        request.setCharacterEncoding("UTF-8");
+        boolean order = Boolean.parseBoolean(request.getParameter("order"));//null=false
+        String swi = request.getParameter("switch");
+        if (swi != null) {
+            order = !order;
+        }
+        String categoryId = request.getParameter("categoryId");
+        String topic = request.getParameter("topic");
+        ArrayList<Post> posts = postService.getAll(order, categoryId, topic);
+
+        String s = JSON.toJSONString(posts);
+        responseJOSN(response, s);
     }
 }
 

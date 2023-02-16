@@ -1,27 +1,17 @@
 package forum.dao;
 
 import forum.pojo.Msg;
+import org.junit.Test;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-public class MsgDao {
+public class MsgDao extends DaoId {
 
-    private String URL = DaoId.URL;
-    private String USER = DaoId.USER;
-    private String PASSWORD = DaoId.PASSWORD;
     private SimpleDateFormat format = new SimpleDateFormat("M月d日 HH:mm");
 
-    static {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public ArrayList<Msg> selectMsgsIdAsc(int postId) {
+    public ArrayList<Msg> selectAll(int postId) {
         String sql = "select msg.*, m.user_name, count(ml.like_id) as mLike\n" +
                 "from msg join member m on m.USER_ID = msg.user_id\n" +
                 "     left join msg_like ml on msg.msg_id = ml.msg_id\n" +
@@ -46,7 +36,6 @@ public class MsgDao {
                                 format.format(rs.getObject("timing", Timestamp.class))
                         ));
             }
-            System.out.println("DAO:"+msgs  );
             return msgs;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -56,9 +45,7 @@ public class MsgDao {
     //Msg生產器
     public void generator(ArrayList<Integer> ids) {
         int length = ids.size();
-        System.out.println("ids-length:" + length);
         int begin = ids.get(0);
-        System.out.println("ids-begin:" + begin);
         String sql = "insert into msg (user_id, post_id, content) values (?,?,?);";
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -72,6 +59,7 @@ public class MsgDao {
             }
             ps.executeBatch();
         } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }

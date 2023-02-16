@@ -1,21 +1,18 @@
 package forum.service;
 
-import forum.dao.CategoryDao;
-import forum.dao.MsgDao;
-import forum.dao.PostDao;
-import forum.dao.PostLikeDao;
+import forum.dao.*;
 import forum.pojo.*;
 import login.UserDao;
 import org.junit.Test;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class PublishService {
     private CategoryDao categoryDao = new CategoryDao();
     private PostDao postDao = new PostDao();
-    private PostLikeDao postLikeDao = new PostLikeDao();
-    private MsgDao msgDao = new MsgDao();
     private UserDao userDao = new UserDao();
+    private PostImgDao postImgDao = new PostImgDao();
 
 
     public FormBean getForm(int userId) {
@@ -34,6 +31,10 @@ public class PublishService {
         return formBean;
     }
 
+    public void submit(Post post, ArrayList<InputStream> ins) {
+        int postId = postDao.insert(post);
+        postImgDao.insert(postId, ins);
+    }
 }
 
 

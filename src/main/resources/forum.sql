@@ -112,24 +112,6 @@ create table msg_like
         foreign key (msg_id) references msg (msg_id)
 );
 
-
-
-delete
-from msg
-where 1 = 1;
-alter table msg
-    auto_increment = 0;
-delete
-from post_like
-where 1 = 1;
-alter table post_like
-    auto_increment = 0;
-delete
-from post
-where 1 = 1;
-alter table post
-    auto_increment = 0;
-
 DROP TABLE IF EXISTS collection_category;
 create table collection_category
 (
@@ -143,4 +125,15 @@ create table collection_category
         foreign key (category_id) references elitebaby.category (id),
     constraint collection_category_member_USER_ID_fk
         foreign key (user_id) references elitebaby.member (USER_ID)
+);
+
+DROP TABLE IF EXISTS post_imgs;
+create table post_imgs
+(
+    id      int auto_increment
+        primary key,
+    post_id int      not null,
+    img     longblob not null,
+    constraint post_imgs_post_post_id_fk
+        foreign key (post_id) references elitebaby.post (post_id)
 );

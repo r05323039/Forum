@@ -4,19 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 
-public class PostLikeDao {
-
-    private String URL = DaoId.URL;
-    private String USER = DaoId.USER;
-    private String PASSWORD = DaoId.PASSWORD;
-
-    static {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
+public class PostLikeDao extends DaoId{
 
     public void generator(ArrayList<Integer> ids) {
         int length = ids.size();
@@ -31,6 +19,7 @@ public class PostLikeDao {
             }
             ps.executeBatch();
         } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -40,10 +29,11 @@ public class PostLikeDao {
              PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.execute();
         } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public void plus(int postId, int userId) {
+    public void insert(int postId, int userId) {
         String sql = "insert into post_like(post_id, user_id) values (?,?);";
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -51,10 +41,11 @@ public class PostLikeDao {
             ps.setInt(2, userId);
             ps.execute();
         } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public void minus(int postId, int userId) {
+    public void delete(int postId, int userId) {
         String sql = "delete from post_like where post_id = ? and user_id = ?;";
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -62,6 +53,7 @@ public class PostLikeDao {
             ps.setInt(2, userId);
             ps.execute();
         } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -21,9 +21,9 @@ public class MsgService {
     }
     public int likeClick(int msgId, int userId) {
         if (msgLikeDao.check(msgId, userId)) {
-            msgLikeDao.minus(msgId, userId);
+            msgLikeDao.delete(msgId, userId);
         } else {
-            msgLikeDao.plus(msgId, userId);
+            msgLikeDao.insert(msgId, userId);
         }
         return msgLikeDao.count(msgId);
     }

@@ -17,7 +17,6 @@ public class BaseServlet extends HttpServlet {
         System.out.println(this.getClass() + " - uri:" + uri);
         int index = uri.lastIndexOf('/');
         String methodName = uri.substring(index + 1);
-//        System.out.println(this.getClass() + " - methodName:" + methodName);
         Class aclass = this.getClass();
         try {
             Method method = aclass.getMethod(methodName, HttpServletRequest.class, HttpServletResponse.class);

@@ -1,21 +1,22 @@
 package forum.service;
 
-import forum.dao.CategoryDao;
-import forum.dao.MsgDao;
-import forum.dao.PostDao;
-import forum.dao.PostLikeDao;
+import forum.dao.*;
 import forum.pojo.Category;
 import forum.pojo.Msg;
 import forum.pojo.Post;
 import forum.pojo.PostBean;
 import org.junit.Test;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 
 public class PostService {
     private CategoryDao categoryDao = new CategoryDao();
     private PostDao postDao = new PostDao();
     private PostLikeDao postLikeDao = new PostLikeDao();
+    private PostImgDao postImgDao = new PostImgDao();
     private MsgDao msgDao = new MsgDao();
 
     public ArrayList<Post> getAll(boolean order, String categoryId, String topic) {
@@ -27,12 +28,15 @@ public class PostService {
         }
 
         if (categoryId != null && !categoryId.equals("null")) {
-            String category = postDao.getCategoryById(Integer.parseInt(categoryId));
+            int id = Integer.parseInt(categoryId);
+            String category = categoryDao.selectById(id).getCategory();
             posts = categoryFilter(posts, category);
         }
         if (topic != null) {
             posts = topicFilter(posts, topic);
         }
+
+        posts = postImgDao.selectAll(posts);//封裝圖片
         return posts;
     }
 
@@ -64,16 +68,16 @@ public class PostService {
 
     public int likeClick(int postId, int userId) {
         if (postLikeDao.check(postId, userId)) {
-            postLikeDao.minus(postId, userId);
+            postLikeDao.delete(postId, userId);
         } else {
-            postLikeDao.plus(postId, userId);
+            postLikeDao.insert(postId, userId);
         }
         return postLikeDao.count(postId);
     }
 
     public PostBean getPostBean(int postId) {
-        Post post = postDao.getPostById(postId);
-        ArrayList<Msg> msgs = msgDao.selectMsgsIdAsc(postId);
+        Post post = postDao.selectById(postId);
+        ArrayList<Msg> msgs = msgDao.selectAll(postId);
         int length = msgs.size();
         PostBean postBean = new PostBean();
         postBean.setPost(post);

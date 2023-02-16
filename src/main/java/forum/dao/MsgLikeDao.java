@@ -2,18 +2,8 @@ package forum.dao;
 
 import java.sql.*;
 
-public class MsgLikeDao {
-    private String URL = DaoId.URL;
-    private String USER = DaoId.USER;
-    private String PASSWORD = DaoId.PASSWORD;
+public class MsgLikeDao extends DaoId{
 
-    static {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public void generator() {
         String sql = "insert into msg_like(msg_id, user_id) values (?,?);";
@@ -26,6 +16,7 @@ public class MsgLikeDao {
             }
             ps.executeBatch();
         } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -35,10 +26,11 @@ public class MsgLikeDao {
              PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.execute();
         } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public void plus(int msgId, int userId) {
+    public void insert(int msgId, int userId) {
         String sql = "insert into msg_like(msg_id, user_id) values (?,?);";
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -46,10 +38,11 @@ public class MsgLikeDao {
             ps.setInt(2, userId);
             ps.execute();
         } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public void minus(int msgId, int userId) {
+    public void delete(int msgId, int userId) {
         String sql = "delete from msg_like where msg_id = ? and user_id = ?;";
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -57,6 +50,7 @@ public class MsgLikeDao {
             ps.setInt(2, userId);
             ps.execute();
         } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 

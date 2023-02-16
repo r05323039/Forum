@@ -2,6 +2,7 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="forum.pojo.Category" %>
 <%@ page import="forum.pojo.User" %>
+<%@ page import="java.util.Base64" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -125,7 +126,8 @@
                         <i class="fa-solid fa-thumbs-up"></i>
                         <span class="showLike"><%=p.getLike()%></span>
                     </div>
-                    <!--                    <img src=""/>-->
+                    <img src="data:image/jpeg;base64,<%= Base64.getEncoder().encodeToString(p.getImgs().get(0))  %>"
+                         alt="view">
                 </div>
             </article>
             <%}%>
@@ -147,7 +149,7 @@
                             <i class="fa-solid fa-thumbs-up"></i>
                             <span class="showLike"></span>
                         </div>
-                        <!--                    <img src=""/>-->
+                        <%--                        <img src""/>--%>
                     </div>
                 </article>
             </template>
@@ -225,20 +227,6 @@
         }
     }
 
-    //收藏區產生新版塊後，添加點選自己移除的監聽器
-    function ClonedCategoryRemoveListener() {
-        const cloneBlock = document.querySelector(".cloneBlock");
-        // console.log("remove監聽器產生");
-        const cloneItems = cloneBlock.querySelectorAll(".items");
-        for (let cloneItem of cloneItems) {
-            cloneItem.addEventListener("click", () => {
-                cloneItem.remove();
-            })
-        }
-    }
-
-    ClonedCategoryRemoveListener();
-
     //category產生收藏功能
     function categoryCollectedListener() {
         const cloneBlock = document.querySelector(".cloneBlock");
@@ -260,8 +248,7 @@
                             if (cloneCate == null) {
                                 const collClone = coll.parentElement.cloneNode(true);
                                 cloneBlock.append(collClone);
-                                //clone板塊添加自我移除
-                                ClonedCategoryRemoveListener();
+                                window.location.reload();
                             }
                         }
                         if (data === false) {
@@ -278,7 +265,6 @@
     }
 
     categoryCollectedListener();
-
 
     //點文章d2區塊，可打開文章
     function postEntranceListener() {
@@ -334,8 +320,8 @@
 
     //發文
     const publish = document.querySelector("#publish");
-    publish.addEventListener("click",()=>{
-        window.location.href="http://localhost:8080/elitebaby/publish.html"
+    publish.addEventListener("click", () => {
+        window.location.href = "http://localhost:8080/elitebaby/publish.html"
     })
 
 </script>

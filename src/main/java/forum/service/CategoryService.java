@@ -28,9 +28,9 @@ public class CategoryService {
     }
     public boolean collect(int userId, int categoryId) {
         if (collectionDao.check(userId, categoryId)) {
-            collectionDao.remove(userId, categoryId);
+            collectionDao.delete(userId, categoryId);
         } else {
-            collectionDao.add(userId, categoryId);
+            collectionDao.insert(userId, categoryId);
         }
         return collectionDao.check(userId, categoryId);
     }

@@ -2,6 +2,7 @@ package forum.pojo;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -13,8 +14,7 @@ public class Post {
     private String topic;
     private String content;
     private int like;
-    private String imagePath;
-    private String[] imagesPath;
+    private ArrayList<byte[]> imgs;
     private String timestamp;
 
 
@@ -27,6 +27,13 @@ public class Post {
         this.content = content;
         this.like = like;
         this.timestamp = timestamp;
+    }
+
+    public Post(int userId, String category, String topic, String content) {
+        this.userId = userId;
+        this.category = category;
+        this.topic = topic;
+        this.content = content;
     }
 }
 
