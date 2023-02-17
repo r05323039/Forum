@@ -143,7 +143,7 @@ public class PostDao extends DaoId {
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement ps = connection.prepareStatement(sql)) {
             for (int c = 0; c < categoryName.size(); c++) {
-                for (int i = 1; i <= 4; i++) {
+                for (int i = 1; i <= 3; i++) {
                     ps.setInt(1, (int) (Math.random() * 5) + 1);
                     ps.setString(2, categoryName.get(c));
                     ps.setString(3, "第" + i + "篇" + categoryName.get(c) + "文章");
@@ -167,6 +167,10 @@ public class PostDao extends DaoId {
             while (rs.next()) {
                 ids.add(rs.getInt("post_id"));
             }
+
+            for(int id:ids)
+            System.out.println(id);
+
             return ids;
         } catch (SQLException e) {
             throw new RuntimeException(e);

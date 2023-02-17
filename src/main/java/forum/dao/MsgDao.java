@@ -59,7 +59,7 @@ public class MsgDao extends DaoId {
             }
             ps.executeBatch();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+
         }
     }
 }

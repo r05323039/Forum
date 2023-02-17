@@ -38,7 +38,7 @@ public class GeneratorServlet extends BaseServlet {
         postService.PostGenerator();
         response.sendRedirect("http://localhost:8080/elitebaby/forum/home");
     }
-    public void like(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void postlike(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         postService.likeGenerator();
         response.sendRedirect("http://localhost:8080/elitebaby/forum/home");
     }
@@ -48,7 +48,10 @@ public class GeneratorServlet extends BaseServlet {
         response.sendRedirect("http://localhost:8080/elitebaby/forum/home");
     }
 
-
+    public void msg(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        msgService.MsgGenerator();
+        response.sendRedirect("http://localhost:8080/elitebaby/forum/home");
+    }
 
 
 

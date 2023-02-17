@@ -125,10 +125,10 @@
                     <div class="like" data-value="<%=p.getPostId()%>">
                         <i class="fa-solid fa-thumbs-up"></i>
                         <span class="showLike"><%=p.getLike()%></span>
-                    </div>
-                    <img src="data:image/jpeg;base64,<%= Base64.getEncoder().encodeToString(p.getImgs().get(0))  %>"
-                         alt="view">
-                </div>
+<%--                    </div>--%>
+<%--                    <img src="data:image/jpeg;base64,<%= Base64.getEncoder().encodeToString(p.getImgs().get(0))  %>"--%>
+<%--                         alt="view">--%>
+<%--                </div>--%>
             </article>
             <%}%>
             <template id="post-template">

@@ -9,6 +9,7 @@ public class PostLikeDao extends DaoId{
     public void generator(ArrayList<Integer> ids) {
         int length = ids.size();
         int begin = ids.get(0);
+        System.out.println("length:"+length+ "begin:"+begin);
         String sql = "insert into post_like(post_id, user_id) values (?,?);";
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -19,7 +20,7 @@ public class PostLikeDao extends DaoId{
             }
             ps.executeBatch();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+
         }
     }
 

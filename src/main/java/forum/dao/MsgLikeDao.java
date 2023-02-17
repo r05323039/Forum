@@ -16,7 +16,7 @@ public class MsgLikeDao extends DaoId{
             }
             ps.executeBatch();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+
         }
     }
 
