@@ -18,6 +18,7 @@ public class PostService {
     private PostLikeDao postLikeDao = new PostLikeDao();
     private PostImgDao postImgDao = new PostImgDao();
     private MsgDao msgDao = new MsgDao();
+    private MsgImgDao msgImgDao = new MsgImgDao();
 
     public ArrayList<Post> getAll(boolean order, String categoryId, String topic) {
         ArrayList<Post> posts = new ArrayList<>();
@@ -36,7 +37,7 @@ public class PostService {
             posts = topicFilter(posts, topic);
         }
 
-        posts = postImgDao.selectAll(posts);//封裝圖片
+        posts = postImgDao.selectAll(posts);
         return posts;
     }
 
@@ -77,7 +78,9 @@ public class PostService {
 
     public PostBean getPostBean(int postId) {
         Post post = postDao.selectById(postId);
+        post = postImgDao.selectById(post);
         ArrayList<Msg> msgs = msgDao.selectAll(postId);
+        msgs = msgImgDao.selectAll(msgs);
         int length = msgs.size();
         PostBean postBean = new PostBean();
         postBean.setPost(post);

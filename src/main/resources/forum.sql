@@ -137,3 +137,14 @@ create table post_imgs
     constraint post_imgs_post_post_id_fk
         foreign key (post_id) references elitebaby.post (post_id)
 );
+
+DROP TABLE IF EXISTS msg_imgs;
+create table elitebaby.msg_imgs
+(
+    id      int auto_increment
+        primary key,
+    msg_id int      not null,
+    img     longblob not null,
+    constraint msg_imgs_msg_msg_id_fk
+        foreign key (msg_id) references elitebaby.msg (msg_id)
+);

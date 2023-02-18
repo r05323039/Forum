@@ -26,8 +26,9 @@
         <span>歡迎 USERNAME</span>
         <span>積分: 100</span>
     </div>
-    <div id="publish"><img src="" alt="圖"/>我要發文</div>
-    <div class="follow"><img src="" alt="圖"/>收藏</div>
+    <div class="homepage">首頁</div>
+    <div id="publish">我要發文</div>
+    <div class="follow">收藏</div>
 </div>
 
 
@@ -125,10 +126,14 @@
                     <div class="like" data-value="<%=p.getPostId()%>">
                         <i class="fa-solid fa-thumbs-up"></i>
                         <span class="showLike"><%=p.getLike()%></span>
-<%--                    </div>--%>
-<%--                    <img src="data:image/jpeg;base64,<%= Base64.getEncoder().encodeToString(p.getImgs().get(0))  %>"--%>
-<%--                         alt="view">--%>
-<%--                </div>--%>
+                    </div>
+                    <div class="post-img">
+                        <% if (p.getImgs() != null && p.getImgs().size() > 0) { %>
+                        <img src="data:image/jpeg;base64,<%= Base64.getEncoder().encodeToString(p.getImgs().get(0)) %>"
+                             alt="view"/>
+                        <%}%>
+                    </div>
+                </div>
             </article>
             <%}%>
             <template id="post-template">
@@ -149,7 +154,7 @@
                             <i class="fa-solid fa-thumbs-up"></i>
                             <span class="showLike"></span>
                         </div>
-                        <%--                        <img src""/>--%>
+                        <div class="post-img"/>
                     </div>
                 </article>
             </template>
@@ -169,8 +174,32 @@
                             <i class="fa-solid fa-thumbs-up"></i>
                             <span class="showLike"></span>
                         </div>
-                        <!--                    <img src=""/>-->
+                        <div class="msg-img"/>
                     </div>
+                </article>
+            </template>
+            <template id="form-template">
+                <article>
+                    <div class="d1">
+                        <div class="user"></div>
+                    </div>
+                    <div class="d2">
+                        <form
+                                class="form"
+                                action="http://localhost:8080/elitebaby/publish/publishMsg"
+                                method="post"
+                                enctype="multipart/form-data"
+                        >
+                            <input type="hidden" name="postId">
+                            <label for="textarea">留言:</label><br>
+                            <textarea id="textarea" class="textarea" name="content" required></textarea>
+                            <br/><br/>
+                            <label>插入圖片:</label>
+                            <input type="file" name="image" multiple/><br/><br/>
+                            <input type="submit" value="送出"/>
+                        </form>
+                    </div>
+                    <hr/>
                 </article>
             </template>
         </section>
@@ -182,17 +211,13 @@
     //所有post的like添加監聽器click
     function likeListener() {
         const likes = document.querySelectorAll(".like");
-        // console.log(likes);
         for (const like of likes) {
             like.addEventListener("click", () => {
                 const showLike = like.querySelector(".showLike");
-                // console.log(showLike);
-                // console.log(like.dataset.value);
                 fetch("http://localhost:8080/elitebaby/forum/likeclick?postId=" + like.dataset.value)
                     .then(response => response.text())
                     .then(text => JSON.parse(text))
                     .then(data => {
-                        // console.log(data);
                         if (data === "login") {
                             window.location.href = "http://localhost:8080/elitebaby/login.jsp";
                         }
@@ -266,10 +291,58 @@
 
     categoryCollectedListener();
 
+    //填入post-template
+    function postTemplateFill(post, templatePost) {
+        const postClone = templatePost.cloneNode(true);
+        postClone.querySelector(".user").textContent = post.userName;
+        postClone.querySelector(".date").textContent = post.timestamp;
+        postClone.querySelector(".d2").setAttribute('data-value', post.postId);
+        postClone.querySelector(".category").textContent = "《" + post.category + "》";
+        postClone.querySelector(".topic").textContent = post.topic;
+        postClone.querySelector(".content").textContent = post.content;
+        postClone.querySelector(".d3").setAttribute('data-value', post.postId);
+        postClone.querySelector(".like").setAttribute('data-value', post.postId);
+        postClone.querySelector(".showLike").textContent = post.like;
+        const postImgs = post.imgs;
+        if (postImgs != null && postImgs.length > 0) {
+            const postImgsDiv = postClone.querySelector(".post-img");
+            for (let i = 0; i < postImgs.length; i++) {
+                const imgElement = document.createElement("img");
+                imgElement.src = "data:image/jpeg;base64," + postImgs[i];
+                postImgsDiv.appendChild(imgElement)
+            }
+        }
+        return postClone
+    }
+
+    //填入msg-template
+    function msgTemplateFill(msg, templateMsg) {
+        const msgClone = templateMsg.cloneNode(true);
+        msgClone.querySelector(".user").textContent = msg.userName;
+        msgClone.querySelector(".date").textContent = msg.timestamp;
+        msgClone.querySelector(".d2").setAttribute('data-value', msg.msgId);
+        msgClone.querySelector(".content").textContent = msg.content;
+        msgClone.querySelector(".d3").setAttribute('data-value', msg.msgId);
+        msgClone.querySelector(".m-like").setAttribute('data-value', msg.msgId);
+        msgClone.querySelector(".showLike").textContent = msg.like;
+
+        const msgImgs = msg.imgs;
+        if (msgImgs != null && msgImgs.length > 0) {
+            const msgImgsDiv = msgClone.querySelector(".msg-img");
+            for (let i = 0; i < msgImgs.length; i++) {
+                const imgElement = document.createElement("img");
+                imgElement.src = "data:image/jpeg;base64," + msgImgs[i];
+                msgImgsDiv.appendChild(imgElement)
+            }
+        }
+        return msgClone;
+    }
+
     //點文章d2區塊，可打開文章
     function postEntranceListener() {
         const templatePost = document.querySelector("#post-template").content;
         const templateMsg = document.querySelector("#msg-template").content;
+        const templateForm = document.querySelector("#form-template").content;
         const postsD2 = document.querySelectorAll(".d2")
         for (const p of postsD2) {
             p.addEventListener("click", () => {
@@ -285,30 +358,41 @@
                         const panel = document.querySelector(".right");
                         panel.innerText = '';
 
-                        const postClone = templatePost.cloneNode(true);
-                        postClone.querySelector(".user").textContent = post.userName;
-                        postClone.querySelector(".date").textContent = post.timestamp;
-                        postClone.querySelector(".d2").setAttribute('data-value', post.postId);
-                        postClone.querySelector(".category").textContent = "《" + post.category + "》";
-                        postClone.querySelector(".topic").textContent = post.topic;
-                        postClone.querySelector(".content").textContent = post.content;
-                        postClone.querySelector(".d3").setAttribute('data-value', post.postId);
-                        postClone.querySelector(".like").setAttribute('data-value', post.postId);
-                        postClone.querySelector(".showLike").textContent = post.like;
+                        const postClone = postTemplateFill(post, templatePost);
                         panel.appendChild(postClone);
-                        likeListener();
 
                         for (let i = 0; i < msgs.length; i++) {
-                            const msgClone = templateMsg.cloneNode(true);
-                            msgClone.querySelector(".user").textContent = msgs[i].userName;
-                            msgClone.querySelector(".date").textContent = msgs[i].timestamp;
-                            msgClone.querySelector(".d2").setAttribute('data-value', msgs[i].msgId);
-                            msgClone.querySelector(".content").textContent = msgs[i].content;
-                            msgClone.querySelector(".d3").setAttribute('data-value', msgs[i].msgId);
-                            msgClone.querySelector(".m-like").setAttribute('data-value', msgs[i].msgId);
-                            msgClone.querySelector(".showLike").textContent = msgs[i].like;
+                            const msgClone = msgTemplateFill(msgs[i], templateMsg)
                             panel.appendChild(msgClone);
                         }
+                        ;
+
+                        if (data.userId > 0) {
+                            const formClone = templateForm.cloneNode(true);
+                            formClone.querySelector(".user").textContent = "名字";
+                            formClone.querySelector('input[name="postId"]').value = post.postId;
+                            const form = formClone.querySelector(".form");
+                            form.addEventListener("submit", (event) => {
+                                event.preventDefault();
+                                fetch('http://localhost:8080/elitebaby/publish/publishMsg', {
+                                    body: new FormData(form),
+                                    method: "post"
+                                })
+                                    .then(response => response.text())
+                                    .then(text => JSON.parse(text))
+                                    .then(data => {
+                                        // console.log(data);
+                                        if (data != null) {
+                                            const articles = document.querySelectorAll("article");
+                                            const lastArticle = articles[articles.length - 1];
+                                            lastArticle.before(msgTemplateFill(data,templateMsg));
+                                            form.reset();
+                                        }
+                                    })
+                            })
+                            panel.appendChild(formClone)
+                        }
+                        likeListener();
                         likeMsgListener();
                     })
             })
@@ -316,13 +400,17 @@
     }
 
     postEntranceListener();
-
-
+    //回首頁
+    const homepage = document.querySelector(".homepage");
+    homepage.addEventListener("click", () => {
+        window.location.href = "http://localhost:8080/elitebaby/forum/home";
+    });
     //發文
     const publish = document.querySelector("#publish");
     publish.addEventListener("click", () => {
         window.location.href = "http://localhost:8080/elitebaby/publish.html"
     })
+
 
 </script>
 </html>

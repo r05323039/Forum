@@ -24,7 +24,6 @@ public class ForumServlet extends BaseServlet {
     private PostService postService = new PostService();
     private MsgService msgService = new MsgService();
 
-
     public void home(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //取得參數
         request.setCharacterEncoding("UTF-8");
@@ -94,6 +93,15 @@ public class ForumServlet extends BaseServlet {
     public void postBean(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int postId = Integer.parseInt(request.getParameter("postId"));
         PostBean postBean = postService.getPostBean(postId);
+
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        System.out.println(user);
+        if (user != null) {
+            int userId = user.getUserId();
+            System.out.println(userId);
+            postBean.setUserId(userId);
+        }
         String s = JSON.toJSONString(postBean);
         responseJOSN(response, s);
     }

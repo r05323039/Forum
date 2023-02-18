@@ -13,6 +13,8 @@ public class PublishService {
     private PostDao postDao = new PostDao();
     private UserDao userDao = new UserDao();
     private PostImgDao postImgDao = new PostImgDao();
+    private MsgDao msgDao = new MsgDao();
+    private MsgImgDao msgImgDao = new MsgImgDao();
 
 
     public FormBean getForm(int userId) {
@@ -31,9 +33,18 @@ public class PublishService {
         return formBean;
     }
 
-    public void submit(Post post, ArrayList<InputStream> ins) {
+    public void insertPost(Post post, ArrayList<InputStream> ins) {
         int postId = postDao.insert(post);
         postImgDao.insert(postId, ins);
+    }
+
+    public Msg insertMsg(Msg msg, ArrayList<InputStream> ins) {
+        int msgId = msgDao.insert(msg);
+        msgImgDao.insert(msgId,ins);
+        msg = msgDao.selectById(msgId);
+        msg = msgImgDao.selectById(msg);
+        System.out.println(msg);
+        return msg;
     }
 }
 

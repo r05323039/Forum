@@ -1,11 +1,9 @@
 package forum.controller;
 
 import com.alibaba.fastjson.JSON;
-import forum.pojo.FormBean;
-import forum.pojo.Post;
-import forum.pojo.User;
-import forum.service.PostService;
-import forum.service.PublishService;
+
+import forum.pojo.*;
+import forum.service.*;
 
 import javax.servlet.ServletException;
 
@@ -25,28 +23,44 @@ import java.util.Collection;
 public class PublishServlet extends BaseServlet {
     private PublishService publishService = new PublishService();
 
-    private PostService postService = new PostService();
-
     public void getForm(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         int userId = user.getUserId();
         FormBean formBean = publishService.getForm(userId);
-//        System.out.println(formBean);
+
         String J_formBean = JSON.toJSONString(formBean);
         responseJOSN(response, J_formBean);
     }
 
-    public void submit(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public void publishPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         int userId = user.getUserId();
         String category = request.getParameter("category");
         String topic = request.getParameter("topic");
         String content = request.getParameter("content");
-        Post post = new Post(userId, category, topic, content);//封裝Post參數
+        Post post = new Post(userId, category, topic, content);
+        ArrayList<InputStream> ins = getImageInputStreams(request.getParts());
+        publishService.insertPost(post, ins);
+        response.sendRedirect("http://localhost:8080/elitebaby/forum/home");
+    }
+    public void publishMsg(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        int userId = user.getUserId();
+        int postId = Integer.parseInt(request.getParameter("postId"));
+        String content = request.getParameter("content");
+        Msg msg = new Msg(postId,userId,content);
+        ArrayList<InputStream> ins = getImageInputStreams(request.getParts());
+        System.out.println(ins);
 
-        Collection<Part> parts = request.getParts();
+        msg = publishService.insertMsg(msg, ins);
+        String s = JSON.toJSONString(msg);
+        responseJOSN(response, s);
+    }
+
+    public ArrayList<InputStream> getImageInputStreams(Collection<Part> parts) throws IOException {
         ArrayList<InputStream> ins = new ArrayList<>();
         for (Part p : parts) {
             if (!p.getName().equals("image")) {
@@ -58,23 +72,7 @@ public class PublishServlet extends BaseServlet {
             }
             ins.add(p.getInputStream());
         }
-        publishService.submit(post, ins);
-        response.sendRedirect("http://localhost:8080/elitebaby/forum/home");
-    }
-
-    public void aaa(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        request.setCharacterEncoding("UTF-8");
-        boolean order = Boolean.parseBoolean(request.getParameter("order"));//null=false
-        String swi = request.getParameter("switch");
-        if (swi != null) {
-            order = !order;
-        }
-        String categoryId = request.getParameter("categoryId");
-        String topic = request.getParameter("topic");
-        ArrayList<Post> posts = postService.getAll(order, categoryId, topic);
-
-        String s = JSON.toJSONString(posts);
-        responseJOSN(response, s);
+        return ins;
     }
 }
 
