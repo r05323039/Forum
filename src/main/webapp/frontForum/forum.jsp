@@ -1,7 +1,5 @@
-<%@ page import="forum.pojo.Post" %>
+<%@ page import="forum.pojo.*" %>
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="forum.pojo.Category" %>
-<%@ page import="forum.pojo.User" %>
 <%@ page import="java.util.Base64" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
@@ -57,10 +55,9 @@
                 <div class="text">我的最愛</div>
                 <div class="cloneBlock">
                     <%
-                        User user = (User) session.getAttribute("user");
-                        if (user != null) {
+                        Access access = (Access) session.getAttribute("access");
+                        if (access != null) {
                             ArrayList<Category> CCs = (ArrayList<Category>) request.getAttribute("CCs");
-                            System.out.println(CCs);
                             for (Category cc : CCs) {
                     %>
                     <div class="items category<%=cc.getId()%>">
@@ -219,7 +216,7 @@
                     .then(text => JSON.parse(text))
                     .then(data => {
                         if (data === "login") {
-                            window.location.href = "http://localhost:8080/elitebaby/login.jsp";
+                            window.location.href = "frontForum/login.jsp";
                         }
                         if (typeof data === "number") {
                             showLike.innerText = data;
@@ -242,7 +239,7 @@
                     .then(text => JSON.parse(text))
                     .then(data => {
                         if (data === "login") {
-                            window.location.href = "http://localhost:8080/elitebaby/login.jsp";
+                            window.location.href = "frontForum/login.jsp";
                         }
                         if (typeof data === "number") {
                             showLike.innerText = data;
@@ -264,7 +261,7 @@
                     .then(data => {
                         // console.log(data);
                         if (data === "login") {
-                            window.location.href = "http://localhost:8080/elitebaby/login.jsp";
+                            window.location.href = "frontForum/login.jsp";
                         }
                         if (data === true) {
                             //產生收藏文章 clone
@@ -408,9 +405,7 @@
     //發文
     const publish = document.querySelector("#publish");
     publish.addEventListener("click", () => {
-        window.location.href = "http://localhost:8080/elitebaby/publish.html"
+        window.location.href = "/elitebaby/frontForum/publish.html"
     })
-
-
 </script>
 </html>

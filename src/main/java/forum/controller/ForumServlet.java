@@ -1,13 +1,8 @@
 package forum.controller;
 
 import com.alibaba.fastjson.JSON;
-import forum.pojo.Category;
-import forum.pojo.Post;
-import forum.pojo.PostBean;
-import forum.service.CategoryService;
-import forum.service.MsgService;
-import forum.service.PostService;
-import forum.pojo.User;
+import forum.pojo.*;
+import forum.service.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,7 +17,7 @@ import java.util.ArrayList;
 public class ForumServlet extends BaseServlet {
     private CategoryService categoryService = new CategoryService();
     private PostService postService = new PostService();
-    private MsgService msgService = new MsgService();
+    public String frontForumPath = "/frontForum/forum.jsp";
 
     public void home(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //取得參數
@@ -48,21 +43,21 @@ public class ForumServlet extends BaseServlet {
         request.setAttribute("topic", topic);
 
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-        if (user != null) {
-            int userId = user.getUserId();
+        Access access = (Access) session.getAttribute("access");
+        if (access != null) {
+            int userId = access.getUserId();
             ArrayList<Category> collectedCategories = categoryService.getCollectedCategories(userId);
             request.setAttribute("CCs", collectedCategories);
         }
         //傳送
-        request.getRequestDispatcher("/forum.jsp").forward(request, response);
+        request.getRequestDispatcher(frontForumPath).forward(request, response);
     }
 
     //文章按讚
-    public void likeclick(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void likeclick(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-        int userId = user.getUserId();
+        Access access = (Access) session.getAttribute("access");
+        int userId = access.getUserId();
         int postId = Integer.parseInt(request.getParameter("postId"));
         int count = postService.likeClick(postId, userId);
         responseJOSN(response, String.valueOf(count));
@@ -70,36 +65,34 @@ public class ForumServlet extends BaseServlet {
 
 
     //獲取USER已加入的收藏話題
-    public void collectedCategories(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void collectedCategories(HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-        int userId = user.getUserId();
+        Access access = (Access) session.getAttribute("access");
+        int userId = access.getUserId();
         ArrayList<Category> collectedCategories = categoryService.getCollectedCategories(userId);
         String J_categories = JSON.toJSONString(collectedCategories);
         responseJOSN(response, J_categories);
     }
-
     //加入收藏話題
-    public void addCategoryCollect(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void addCategoryCollect(HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-        int userId = user.getUserId();
+        Access access = (Access) session.getAttribute("access");
+        int userId = access.getUserId();
         int categoryId = Integer.parseInt(request.getParameter("categoryId"));
         boolean exist = categoryService.collect(userId, categoryId);
         responseJOSN(response, String.valueOf(exist));
     }
 
     //獲得文章及留言串
-    public void postBean(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void postBean(HttpServletRequest request, HttpServletResponse response) {
         int postId = Integer.parseInt(request.getParameter("postId"));
         PostBean postBean = postService.getPostBean(postId);
 
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-        System.out.println(user);
-        if (user != null) {
-            int userId = user.getUserId();
-            System.out.println(userId);
+        Access access = (Access) session.getAttribute("access");
+
+        if (access != null) {
+            int userId = access.getUserId();
             postBean.setUserId(userId);
         }
         String s = JSON.toJSONString(postBean);

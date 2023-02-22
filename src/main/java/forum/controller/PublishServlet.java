@@ -23,10 +23,10 @@ import java.util.Collection;
 public class PublishServlet extends BaseServlet {
     private PublishService publishService = new PublishService();
 
-    public void getForm(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void getForm(HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-        int userId = user.getUserId();
+        Access access = (Access) session.getAttribute("access");
+        int userId = access.getUserId();
         FormBean formBean = publishService.getForm(userId);
 
         String J_formBean = JSON.toJSONString(formBean);
@@ -35,8 +35,8 @@ public class PublishServlet extends BaseServlet {
 
     public void publishPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-        int userId = user.getUserId();
+        Access access = (Access) session.getAttribute("access");
+        int userId = access.getUserId();
         String category = request.getParameter("category");
         String topic = request.getParameter("topic");
         String content = request.getParameter("content");
@@ -47,8 +47,8 @@ public class PublishServlet extends BaseServlet {
     }
     public void publishMsg(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-        int userId = user.getUserId();
+        Access access = (Access) session.getAttribute("access");
+        int userId = access.getUserId();
         int postId = Integer.parseInt(request.getParameter("postId"));
         String content = request.getParameter("content");
         Msg msg = new Msg(postId,userId,content);

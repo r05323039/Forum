@@ -1,15 +1,7 @@
 package forum.service;
 
 import forum.dao.*;
-import forum.pojo.Category;
-import forum.pojo.Msg;
-import forum.pojo.Post;
-import forum.pojo.PostBean;
-import org.junit.Test;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import forum.pojo.*;
 import java.util.ArrayList;
 
 public class PostService {

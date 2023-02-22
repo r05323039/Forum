@@ -2,8 +2,7 @@ package forum.service;
 
 import forum.dao.*;
 import forum.pojo.*;
-import login.UserDao;
-import org.junit.Test;
+import forum.dao.AccessDao;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -11,7 +10,7 @@ import java.util.ArrayList;
 public class PublishService {
     private CategoryDao categoryDao = new CategoryDao();
     private PostDao postDao = new PostDao();
-    private UserDao userDao = new UserDao();
+    private AccessDao accessDao = new AccessDao();
     private PostImgDao postImgDao = new PostImgDao();
     private MsgDao msgDao = new MsgDao();
     private MsgImgDao msgImgDao = new MsgImgDao();
@@ -24,7 +23,7 @@ public class PublishService {
             categoryNames[i] = categories.get(i).getCategory();
         }
         ;
-        String name = userDao.userNameById(userId);
+        String name = accessDao.userNameById(userId);
 
         FormBean formBean = new FormBean();
         formBean.setCategoryNames(categoryNames);

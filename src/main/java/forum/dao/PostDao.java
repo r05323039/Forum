@@ -24,10 +24,10 @@ public class PostDao extends DaoId {
             "看來她只想要我擔任司機就好，「不給跟」的意圖相當堅定。";
 
     public ArrayList<Post> selectAll() {
-        String sql = "select p.*, m.user_name, count(l.like_id) as plike\n" +
+        String sql = "select p.*, ac.user_name, count(l.like_id) as plike\n" +
                 "from post p\n" +
                 "         left join post_like l on p.post_id = l.post_id\n" +
-                "         join member m on m.USER_ID = p.user_id\n" +
+                "         join access ac on ac.user_id = p.user_id\n" +
                 "group by p.post_id\n" +
                 "order by p.post_id desc";
         ArrayList<Post> posts = new ArrayList<>();
@@ -55,10 +55,10 @@ public class PostDao extends DaoId {
     }
 
     public ArrayList<Post> selectPopular() {
-        String sql = "select p.*, m.user_name, count(l.like_id) as plike\n" +
+        String sql = "select p.*, ac.user_name, count(l.like_id) as plike\n" +
                 "from post p\n" +
                 "         left join post_like l on p.post_id = l.post_id\n" +
-                "         join member m on m.USER_ID = p.user_id\n" +
+                "         join access ac on ac.user_id = p.user_id\n" +
                 "group by p.post_id\n" +
                 "order by plike desc;";
         ArrayList<Post> posts = new ArrayList<>();
@@ -86,10 +86,10 @@ public class PostDao extends DaoId {
     }
 
     public Post selectById(int postId) {
-        String sql = "select p.*, m.user_name, count(l.like_id) as plike\n" +
+        String sql = "select p.*, ac.user_name, count(l.like_id) as plike\n" +
                 "from post p\n" +
                 "         left join post_like l on p.post_id = l.post_id\n" +
-                "         join member m on m.USER_ID = p.user_id\n" +
+                "         join access ac on ac.user_id = p.user_id\n" +
                 "where p.post_id = ?\n" +
                 "group by l.post_id;";
         Post post = null;
@@ -143,7 +143,7 @@ public class PostDao extends DaoId {
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement ps = connection.prepareStatement(sql)) {
             for (int c = 0; c < categoryName.size(); c++) {
-                for (int i = 1; i <= 1; i++) {
+                for (int i = 1; i <= 2; i++) {
                     ps.setInt(1, (int) (Math.random() * 5) + 1);
                     ps.setString(2, categoryName.get(c));
                     ps.setString(3, "第" + i + "篇" + categoryName.get(c) + "文章");

@@ -13,8 +13,8 @@ public class MsgDao extends DaoId {
     private SimpleDateFormat format = new SimpleDateFormat("M月d日 HH:mm");
 
     public ArrayList<Msg> selectAll(int postId) {
-        String sql = "select msg.*, m.user_name, count(ml.like_id) as mLike\n" +
-                "from msg join member m on m.USER_ID = msg.user_id\n" +
+        String sql = "select msg.*, ac.user_name, count(ml.like_id) as mLike\n" +
+                "from msg join access ac on ac.user_id = msg.user_id\n" +
                 "     left join msg_like ml on msg.msg_id = ml.msg_id\n" +
                 "where post_id = ?\n" +
                 "group by msg.msg_id\n" +
@@ -44,9 +44,9 @@ public class MsgDao extends DaoId {
     }
 
     public Msg selectById(int msgId) {
-        String sql = "select msg.*, m.user_name, count(ml.like_id) as mlike\n" +
+        String sql = "select msg.*, ac.user_name, count(ml.like_id) as mlike\n" +
                 "from msg\n" +
-                "join member m on m.USER_ID = msg.user_id\n" +
+                "join access ac on ac.user_id = msg.user_id\n" +
                 "left join msg_like ml on msg.msg_id = ml.msg_id\n" +
                 "where msg.msg_id =? \n" +
                 "group by msg.msg_id;";
