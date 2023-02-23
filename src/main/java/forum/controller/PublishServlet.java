@@ -27,7 +27,7 @@ public class PublishServlet extends BaseServlet {
         HttpSession session = request.getSession();
         Access access = (Access) session.getAttribute("access");
         int userId = access.getUserId();
-        FormBean formBean = publishService.getForm(userId);
+        FormBean formBean = publishService.getFormBean(userId);
 
         String J_formBean = JSON.toJSONString(formBean);
         responseJOSN(response, J_formBean);

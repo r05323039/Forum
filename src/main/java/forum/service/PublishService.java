@@ -16,7 +16,7 @@ public class PublishService {
     private MsgImgDao msgImgDao = new MsgImgDao();
 
 
-    public FormBean getForm(int userId) {
+    public FormBean getFormBean(int userId) {
         ArrayList<Category> categories = categoryDao.selectAll();
         String[] categoryNames = new String[categories.size()];
         for (int i = 0; i < categories.size(); i++) {

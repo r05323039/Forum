@@ -24,9 +24,9 @@
         <span>歡迎 USERNAME</span>
         <span>積分: 100</span>
     </div>
-    <div class="homepage">首頁</div>
-    <div id="publish">我要發文</div>
-    <div class="follow">收藏</div>
+    <div class="homepage button">首頁</div>
+    <div id="publish" class="button">我要發文</div>
+    <div class="follow button">收藏</div>
 </div>
 
 
@@ -47,10 +47,7 @@
                 <input type="hidden" name="categoryId" value="<%=categoryId%>">
                 <input type="submit" value="標題搜尋">
             </form>
-
             <br/>
-            <br/>
-
             <div class="category">
                 <div class="text">我的最愛</div>
                 <div class="cloneBlock">
@@ -156,7 +153,7 @@
                 </article>
             </template>
             <template id="msg-template">
-                <article>
+                <article class="msg">
                     <div class="d1">
                         <div class="user"></div>
                         </br>
@@ -175,7 +172,36 @@
                     </div>
                 </article>
             </template>
-            <template id="form-template">
+            <template id="post-form-template">
+                <article>
+                    <div class="d1">
+                        <div class="user"></div>
+                    </div>
+                    <div class="d2">
+                        <form
+                                class="form"
+                                action="http://localhost:8080/elitebaby/publish/publishPost"
+                                method="post"
+                                enctype="multipart/form-data"
+                        >
+                            <label for="category">類型:</label>
+                            <select class="category" id="category" name="category" required></select>
+                            <br/><br/>
+                            <label for="topic">標題:</label>
+                            <input type="text" id="topic" name="topic" required/><br/><br/>
+
+                            <label for="textarea">內容:</label><br>
+                            <textarea class="textarea" name="content" required></textarea>
+                            <br/><br/>
+                            <label>插入圖片:</label>
+                            <input type="file" name="image" multiple/><br/><br/>
+                            <input type="submit" value="送出"/>
+                        </form>
+                    </div>
+                    <hr/>
+                </article>
+            </template>
+            <template id="msg-form-template">
                 <article>
                     <div class="d1">
                         <div class="user"></div>
@@ -216,7 +242,7 @@
                     .then(text => JSON.parse(text))
                     .then(data => {
                         if (data === "login") {
-                            window.location.href = "frontForum/login.jsp";
+                            window.location.href = "/elitebaby/frontForum/login.jsp";
                         }
                         if (typeof data === "number") {
                             showLike.innerText = data;
@@ -239,7 +265,7 @@
                     .then(text => JSON.parse(text))
                     .then(data => {
                         if (data === "login") {
-                            window.location.href = "frontForum/login.jsp";
+                            window.location.href = "/elitebaby/frontForum/login.jsp";
                         }
                         if (typeof data === "number") {
                             showLike.innerText = data;
@@ -261,7 +287,7 @@
                     .then(data => {
                         // console.log(data);
                         if (data === "login") {
-                            window.location.href = "frontForum/login.jsp";
+                            window.location.href = "/elitebaby/frontForum/login.jsp";
                         }
                         if (data === true) {
                             //產生收藏文章 clone
@@ -315,6 +341,7 @@
     //填入msg-template
     function msgTemplateFill(msg, templateMsg) {
         const msgClone = templateMsg.cloneNode(true);
+        console.log(msgClone);
         msgClone.querySelector(".user").textContent = msg.userName;
         msgClone.querySelector(".date").textContent = msg.timestamp;
         msgClone.querySelector(".d2").setAttribute('data-value', msg.msgId);
@@ -339,7 +366,7 @@
     function postEntranceListener() {
         const templatePost = document.querySelector("#post-template").content;
         const templateMsg = document.querySelector("#msg-template").content;
-        const templateForm = document.querySelector("#form-template").content;
+        const templateForm = document.querySelector("#msg-form-template").content;
         const postsD2 = document.querySelectorAll(".d2")
         for (const p of postsD2) {
             p.addEventListener("click", () => {
@@ -382,7 +409,7 @@
                                         if (data != null) {
                                             const articles = document.querySelectorAll("article");
                                             const lastArticle = articles[articles.length - 1];
-                                            lastArticle.before(msgTemplateFill(data,templateMsg));
+                                            lastArticle.before(msgTemplateFill(data, templateMsg));
                                             form.reset();
                                         }
                                     })
@@ -402,10 +429,44 @@
     homepage.addEventListener("click", () => {
         window.location.href = "http://localhost:8080/elitebaby/forum/home";
     });
-    //發文
+    //我要發文按鈕監聽器
     const publish = document.querySelector("#publish");
     publish.addEventListener("click", () => {
-        window.location.href = "/elitebaby/frontForum/publish.html"
-    })
+        getPublishForm();
+    });
+
+    //填入發文模板
+    function fillPostFormTemplate(data, template) {
+        const userName = data.userName;
+        const categoryNames = data.categoryNames;
+
+        const formClone = template.cloneNode(true);
+        formClone.querySelector(".user").textContent = userName;
+        const selectCategory = formClone.querySelector(".category");
+        console.log(selectCategory);
+        for (let i = 0; i < categoryNames.length; i++) {
+            const optionElement = document.createElement("option");
+            optionElement.value = categoryNames[i];
+            optionElement.textContent = categoryNames[i];
+            selectCategory.appendChild(optionElement);
+        }
+        return formClone;
+    }
+    //獲取發文模板參數
+    function getPublishForm() {
+        const panel = document.querySelector(".right");
+        const postFormTemplate = document.querySelector("#post-form-template").content;
+        fetch("http://localhost:8080/elitebaby/publish/getForm")
+            .then((response) => response.text())
+            .then((text) => JSON.parse(text))
+            .then((data) => {
+                if (data === "login") {
+                    window.location.href = "/elitebaby/frontForum/login.jsp";
+                }
+                panel.innerText = '';
+                const postForm = fillPostFormTemplate(data, postFormTemplate);
+                panel.appendChild(postForm);
+            });
+    }
 </script>
 </html>
