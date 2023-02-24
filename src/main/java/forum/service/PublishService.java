@@ -3,6 +3,7 @@ package forum.service;
 import forum.dao.*;
 import forum.pojo.*;
 import forum.dao.AccessDao;
+import org.junit.Test;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -39,15 +40,10 @@ public class PublishService {
 
     public Msg insertMsg(Msg msg, ArrayList<InputStream> ins) {
         int msgId = msgDao.insert(msg);
-        msgImgDao.insert(msgId,ins);
+        msgImgDao.insert(msgId, ins);
         msg = msgDao.selectById(msgId);
         msg = msgImgDao.selectById(msg);
         System.out.println(msg);
         return msg;
     }
 }
-
-
-
-
-

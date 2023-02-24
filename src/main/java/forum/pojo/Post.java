@@ -104,6 +104,21 @@ public class Post {
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "postId=" + postId +
+                ", userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", category='" + category + '\'' +
+                ", topic='" + topic + '\'' +
+                ", content='" + content + '\'' +
+                ", like=" + like +
+                ", imgs=" + imgs +
+                ", timestamp='" + timestamp + '\'' +
+                '}';
+    }
 }
 
 

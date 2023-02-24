@@ -15,6 +15,103 @@
             referrerpolicy="no-referrer"
     />
     <link type="text/css" rel="stylesheet" href="http://localhost:8080/elitebaby/forum.css"/>
+
+    <template id="post-template">
+        <article class="post-article">
+            <div class="d1">
+                <div class="user"></div>
+                </br>
+                <div class="date"></div>
+            </div>
+            <div class="d2" data-value="">
+                <div class="category"></div>
+                <div class="topic"></div>
+                <p class="content"></p>
+            </div>
+            <hr/>
+            <div class="d3">
+                <div class="like" data-value="">
+                    <i class="fa-solid fa-thumbs-up"></i>
+                    <span class="showLike"></span>
+                </div>
+                <div class="edit">編輯</div>
+                <div class="post-img"/>
+            </div>
+        </article>
+    </template>
+    <template id="msg-template">
+        <article class="msg-article">
+            <div class="d1">
+                <div class="user"></div>
+                </br>
+                <div class="date"></div>
+            </div>
+            <div class="d2" data-value="">
+                <p class="content"></p>
+            </div>
+            <hr/>
+            <div class="d3">
+                <div class="m-like" data-value="">
+                    <i class="fa-solid fa-thumbs-up"></i>
+                    <span class="showLike"></span>
+                </div>
+                <div class="msg-img"/>
+            </div>
+        </article>
+    </template>
+    <template id="post-form-template">
+        <article class="post-form-article">
+            <div class="d1">
+                <div class="user"></div>
+            </div>
+            <div class="d2">
+                <form
+                        class="form"
+                        action="http://localhost:8080/elitebaby/publish/publishPost"
+                        method="post"
+                        enctype="multipart/form-data"
+                >
+                    <label for="category">類型:</label>
+                    <select class="category" id="category" name="category" required></select>
+                    <br/><br/>
+                    <label for="topic">標題:</label>
+                    <input type="text" id="topic" name="topic" class="topic" required/><br/><br/>
+
+                    <label for="textarea">內容:</label><br>
+                    <textarea class="textarea" name="content" required></textarea>
+                    <br/><br/>
+                    <label>插入圖片:</label>
+                    <input type="file" name="image" multiple/><br/><br/>
+                    <input type="submit" value="送出"/>
+                </form>
+            </div>
+            <hr/>
+        </article>
+    </template>
+    <template id="msg-form-template">
+        <article class="msg-form-article">
+            <div class="d1">
+                <div class="user"></div>
+            </div>
+            <div class="d2">
+                <form
+                        class="form"
+                        action="http://localhost:8080/elitebaby/publish/publishMsg"
+                        method="post"
+                        enctype="multipart/form-data"
+                >
+                    <input type="hidden" name="postId">
+                    <label for="textarea">留言:</label><br>
+                    <textarea id="textarea" class="textarea" name="content" required></textarea>
+                    <br/><br/>
+                    <label>插入圖片:</label>
+                    <input type="file" name="image" multiple/><br/><br/>
+                    <input type="submit" value="送出"/>
+                </form>
+            </div>
+            <hr/>
+        </article>
+    </template>
 </head>
 <body>
 <header>Header</header>
@@ -28,7 +125,6 @@
     <div id="publish" class="button">我要發文</div>
     <div class="follow button">收藏</div>
 </div>
-
 
 <% boolean order = (boolean) request.getAttribute("order");
     String showOrder = (order) ? "熱門" : "最新";
@@ -130,101 +226,7 @@
                 </div>
             </article>
             <%}%>
-            <template id="post-template">
-                <article>
-                    <div class="d1">
-                        <div class="user"></div>
-                        </br>
-                        <div class="date"></div>
-                    </div>
-                    <div class="d2" data-value="">
-                        <div class="category"></div>
-                        <div class="topic"></div>
-                        <p class="content"></p>
-                    </div>
-                    <hr/>
-                    <div class="d3">
-                        <div class="like" data-value="">
-                            <i class="fa-solid fa-thumbs-up"></i>
-                            <span class="showLike"></span>
-                        </div>
-                        <div class="post-img"/>
-                    </div>
-                </article>
-            </template>
-            <template id="msg-template">
-                <article class="msg">
-                    <div class="d1">
-                        <div class="user"></div>
-                        </br>
-                        <div class="date"></div>
-                    </div>
-                    <div class="d2" data-value="">
-                        <p class="content"></p>
-                    </div>
-                    <hr/>
-                    <div class="d3">
-                        <div class="m-like" data-value="">
-                            <i class="fa-solid fa-thumbs-up"></i>
-                            <span class="showLike"></span>
-                        </div>
-                        <div class="msg-img"/>
-                    </div>
-                </article>
-            </template>
-            <template id="post-form-template">
-                <article>
-                    <div class="d1">
-                        <div class="user"></div>
-                    </div>
-                    <div class="d2">
-                        <form
-                                class="form"
-                                action="http://localhost:8080/elitebaby/publish/publishPost"
-                                method="post"
-                                enctype="multipart/form-data"
-                        >
-                            <label for="category">類型:</label>
-                            <select class="category" id="category" name="category" required></select>
-                            <br/><br/>
-                            <label for="topic">標題:</label>
-                            <input type="text" id="topic" name="topic" required/><br/><br/>
 
-                            <label for="textarea">內容:</label><br>
-                            <textarea class="textarea" name="content" required></textarea>
-                            <br/><br/>
-                            <label>插入圖片:</label>
-                            <input type="file" name="image" multiple/><br/><br/>
-                            <input type="submit" value="送出"/>
-                        </form>
-                    </div>
-                    <hr/>
-                </article>
-            </template>
-            <template id="msg-form-template">
-                <article>
-                    <div class="d1">
-                        <div class="user"></div>
-                    </div>
-                    <div class="d2">
-                        <form
-                                class="form"
-                                action="http://localhost:8080/elitebaby/publish/publishMsg"
-                                method="post"
-                                enctype="multipart/form-data"
-                        >
-                            <input type="hidden" name="postId">
-                            <label for="textarea">留言:</label><br>
-                            <textarea id="textarea" class="textarea" name="content" required></textarea>
-                            <br/><br/>
-                            <label>插入圖片:</label>
-                            <input type="file" name="image" multiple/><br/><br/>
-                            <input type="submit" value="送出"/>
-                        </form>
-                    </div>
-                    <hr/>
-                </article>
-            </template>
         </section>
     </main>
 </div>
@@ -341,7 +343,6 @@
     //填入msg-template
     function msgTemplateFill(msg, templateMsg) {
         const msgClone = templateMsg.cloneNode(true);
-        console.log(msgClone);
         msgClone.querySelector(".user").textContent = msg.userName;
         msgClone.querySelector(".date").textContent = msg.timestamp;
         msgClone.querySelector(".d2").setAttribute('data-value', msg.msgId);
@@ -374,15 +375,18 @@
                     .then(response => response.text())
                     .then(text => JSON.parse(text))
                     .then(data => {
-                        // console.log(data); //OK
+                        console.log(data); //OK
                         const post = data.post;
                         const msgs = data.msgs;
                         const length = data.dataLength;
-
+                        console.log(data.edit);
                         const panel = document.querySelector(".right");
                         panel.innerText = '';
 
                         const postClone = postTemplateFill(post, templatePost);
+                        if(!data.edit){
+                            postClone.querySelector(".edit").style.display = "none";
+                        }
                         panel.appendChild(postClone);
 
                         for (let i = 0; i < msgs.length; i++) {
@@ -393,7 +397,7 @@
 
                         if (data.userId > 0) {
                             const formClone = templateForm.cloneNode(true);
-                            formClone.querySelector(".user").textContent = "名字";
+                            formClone.querySelector(".user").textContent = data.userName;
                             formClone.querySelector('input[name="postId"]').value = post.postId;
                             const form = formClone.querySelector(".form");
                             form.addEventListener("submit", (event) => {
@@ -418,6 +422,7 @@
                         }
                         likeListener();
                         likeMsgListener();
+                        editListener(post);
                     })
             })
         }
@@ -439,11 +444,9 @@
     function fillPostFormTemplate(data, template) {
         const userName = data.userName;
         const categoryNames = data.categoryNames;
-
         const formClone = template.cloneNode(true);
         formClone.querySelector(".user").textContent = userName;
         const selectCategory = formClone.querySelector(".category");
-        console.log(selectCategory);
         for (let i = 0; i < categoryNames.length; i++) {
             const optionElement = document.createElement("option");
             optionElement.value = categoryNames[i];
@@ -452,7 +455,8 @@
         }
         return formClone;
     }
-    //獲取發文模板參數
+
+    //獲取發文模板參數並填入模板
     function getPublishForm() {
         const panel = document.querySelector(".right");
         const postFormTemplate = document.querySelector("#post-form-template").content;
@@ -468,5 +472,31 @@
                 panel.appendChild(postForm);
             });
     }
+
+    //編輯功能
+    function editListener(post) {
+        const panel = document.querySelector(".right");
+        const edit = document.querySelector(".edit");
+        const postFormTemplate = document.querySelector("#post-form-template").content;
+        edit.addEventListener("click", () => {
+            fetch("http://localhost:8080/elitebaby/publish/getForm")
+                .then((response) => response.text())
+                .then((text) => JSON.parse(text))
+                .then((data) => {
+                    if (data === "login") {
+                        window.location.href = "/elitebaby/frontForum/login.jsp";
+                    }
+                    panel.innerText = '';
+                    const postForm = fillPostFormTemplate(data, postFormTemplate);//填入部分資料
+                    postForm.querySelector(".category").value = post.category;
+                    postForm.querySelector(".topic").value = post.topic;
+                    postForm.querySelector(".textarea").value = post.content;
+                    //圖片修改功能
+                    postForm.querySelector(".form").action = "http://localhost:8080/elitebaby/publish/update?postId=" + post.postId
+                    panel.appendChild(postForm);
+                });
+        })
+    }
+
 </script>
 </html>

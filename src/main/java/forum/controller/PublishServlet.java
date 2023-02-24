@@ -22,8 +22,9 @@ import java.util.Collection;
 @WebServlet("/publish/*")
 public class PublishServlet extends BaseServlet {
     private PublishService publishService = new PublishService();
+    private PostService postService = new PostService();
 
-    public void getForm(HttpServletRequest request, HttpServletResponse response){
+    public void getForm(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();
         Access access = (Access) session.getAttribute("access");
         int userId = access.getUserId();
@@ -45,13 +46,14 @@ public class PublishServlet extends BaseServlet {
         publishService.insertPost(post, ins);
         response.sendRedirect("http://localhost:8080/elitebaby/forum/home");
     }
+
     public void publishMsg(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         Access access = (Access) session.getAttribute("access");
         int userId = access.getUserId();
         int postId = Integer.parseInt(request.getParameter("postId"));
         String content = request.getParameter("content");
-        Msg msg = new Msg(postId,userId,content);
+        Msg msg = new Msg(postId, userId, content);
         ArrayList<InputStream> ins = getImageInputStreams(request.getParts());
         System.out.println(ins);
 
@@ -73,6 +75,25 @@ public class PublishServlet extends BaseServlet {
             ins.add(p.getInputStream());
         }
         return ins;
+    }
+
+    public void update(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        //取得參數
+        HttpSession session = request.getSession();
+        Access access = (Access) session.getAttribute("access");
+        int userId = access.getUserId();
+        int postId = Integer.parseInt(request.getParameter("postId"));
+
+        if (postService.checkUserAndPostMatch(userId, postId)) {//有編輯權限
+            String category = request.getParameter("category");
+            String topic = request.getParameter("topic");
+            String content = request.getParameter("content");
+            Post post = new Post(userId, category, topic, content);
+            post.setPostId(postId);
+            postService.update(post);
+            response.sendRedirect("http://localhost:8080/elitebaby/forum/home");
+        }
+        responseJOSN(response, "false");//無編輯權限
     }
 }
 

@@ -136,6 +136,23 @@ public class PostDao extends DaoId {
         }
     }
 
+    public boolean update(Post post) {
+        String sql = "update post\n" +
+                "set category = ?, topic = ?, content = ?\n" +
+                "where post_id = ?;";
+
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, post.getCategory());
+            ps.setString(2, post.getTopic());
+            ps.setString(3, post.getContent());
+            ps.setInt(4, post.getPostId());
+            boolean execute = ps.execute();
+            return execute;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     //posts生成器
     public void postGenerator(ArrayList<String> categoryName) {
@@ -157,6 +174,61 @@ public class PostDao extends DaoId {
         }
     }
 
+    //刪除所有資料
+    public void deleteAll() {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            connection.setAutoCommit(false);
+            preparedStatement = connection.prepareStatement("delete from post_imgs where 1=1;");
+            preparedStatement.executeUpdate();
+            preparedStatement = connection.prepareStatement("alter table post_imgs auto_increment = 0;");
+            preparedStatement.executeUpdate();
+            preparedStatement = connection.prepareStatement("delete from post_like where 1=1;");
+            preparedStatement.executeUpdate();
+            preparedStatement = connection.prepareStatement("alter table post_like auto_increment = 0;");
+            preparedStatement.executeUpdate();
+            preparedStatement = connection.prepareStatement("delete from msg_imgs where 1=1;");
+            preparedStatement.executeUpdate();
+            preparedStatement = connection.prepareStatement("alter table msg_imgs auto_increment = 0;");
+            preparedStatement.executeUpdate();
+            preparedStatement = connection.prepareStatement("delete from msg_like where 1=1;");
+            preparedStatement.executeUpdate();
+            preparedStatement = connection.prepareStatement("alter table msg_like auto_increment = 0;");
+            preparedStatement.executeUpdate();
+            preparedStatement = connection.prepareStatement("delete from msg where 1=1;");
+            preparedStatement.executeUpdate();
+            preparedStatement = connection.prepareStatement("alter table msg auto_increment = 0;");
+            preparedStatement.executeUpdate();
+            preparedStatement = connection.prepareStatement("delete from post where 1=1;");
+            preparedStatement.executeUpdate();
+            preparedStatement = connection.prepareStatement("alter table post auto_increment = 0;");
+            preparedStatement.executeUpdate();
+            connection.commit();
+
+        } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+            e.printStackTrace();
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
     //取得所有Post的id
     public ArrayList<Integer> getPostIds() {
         ArrayList<Integer> ids = new ArrayList<>();
@@ -168,8 +240,8 @@ public class PostDao extends DaoId {
                 ids.add(rs.getInt("post_id"));
             }
 
-            for(int id:ids)
-            System.out.println(id);
+            for (int id : ids)
+                System.out.println(id);
 
             return ids;
         } catch (SQLException e) {
@@ -177,5 +249,20 @@ public class PostDao extends DaoId {
         }
     }
 
+    public boolean selectByPostIdUserId(int userId, int postId) {
+        String sql = "select * from post where user_id = ? and post_id = ?;";
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.setInt(2, postId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+            return false;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
 

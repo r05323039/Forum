@@ -94,6 +94,8 @@ public class ForumServlet extends BaseServlet {
         if (access != null) {
             int userId = access.getUserId();
             postBean.setUserId(userId);
+            if(postService.checkUserAndPostMatch(userId,postId)) {
+                postBean.setEdit(true);}
         }
         String s = JSON.toJSONString(postBean);
         responseJOSN(response, s);

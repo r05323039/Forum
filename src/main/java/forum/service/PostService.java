@@ -2,9 +2,11 @@ package forum.service;
 
 import forum.dao.*;
 import forum.pojo.*;
+
 import java.util.ArrayList;
 
 public class PostService {
+    private AccessDao accessDao = new AccessDao();
     private CategoryDao categoryDao = new CategoryDao();
     private PostDao postDao = new PostDao();
     private PostLikeDao postLikeDao = new PostLikeDao();
@@ -68,16 +70,25 @@ public class PostService {
         return postLikeDao.count(postId);
     }
 
+    public boolean checkUserAndPostMatch(int userId, int postId) {
+        boolean b = postDao.selectByPostIdUserId(userId, postId);
+        System.out.println("boolean:" + b);
+        return b;
+    }
+
+
     public PostBean getPostBean(int postId) {
         Post post = postDao.selectById(postId);
-        post = postImgDao.selectById(post);
-        ArrayList<Msg> msgs = msgDao.selectAll(postId);
-        msgs = msgImgDao.selectAll(msgs);
+        post = postImgDao.selectById(post);//封裝圖片
+        ArrayList<Msg> msgs = msgDao.selectAll(postId);//全部留言
+        msgs = msgImgDao.selectAll(msgs);//封裝留言圖片
         int length = msgs.size();
+        String userName = accessDao.userNameById(post.getUserId());
         PostBean postBean = new PostBean();
         postBean.setPost(post);
         postBean.setMsgs(msgs);
         postBean.setDataLength(length);
+        postBean.setUserName(userName);
         return postBean;
     }
 
@@ -88,6 +99,14 @@ public class PostService {
             categoryName.add(c.getCategory());
         }
         postDao.postGenerator(categoryName);
+    }
+
+    public void deleteAll() {
+        postDao.deleteAll();
+    }
+
+    public boolean update(Post post) {
+        return postDao.update(post);
     }
 }
 
