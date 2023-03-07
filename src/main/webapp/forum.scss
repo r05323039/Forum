@@ -39,7 +39,7 @@ a {
   display: flex;
   flex-wrap: wrap;
   border: 1px dotted black;
-  .search {
+  .welcome {
     margin: 0 2rem;
     width: 60%;
   }
@@ -97,8 +97,8 @@ main {
       border: 1px solid red;
       margin: 1rem;
       background-color: azure;
-      &.msg {
-        background-color: rgb(243, 251, 251);
+      &.msg-article {
+        background-color: rgb(171, 242, 240);
       }
       .d1 {
         display: flex;

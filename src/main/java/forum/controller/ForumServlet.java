@@ -17,6 +17,7 @@ import java.util.ArrayList;
 public class ForumServlet extends BaseServlet {
     private CategoryService categoryService = new CategoryService();
     private PostService postService = new PostService();
+    private AccessService accessService = new AccessService();
     public String frontForumPath = "/frontForum/forum.jsp";
 
     public void home(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -48,6 +49,8 @@ public class ForumServlet extends BaseServlet {
             int userId = access.getUserId();
             ArrayList<Category> collectedCategories = categoryService.getCollectedCategories(userId);
             request.setAttribute("CCs", collectedCategories);
+            String userName = accessService.userNameById(userId);
+            request.setAttribute("userName", userName);
         }
         //傳送
         request.getRequestDispatcher(frontForumPath).forward(request, response);
@@ -65,7 +68,7 @@ public class ForumServlet extends BaseServlet {
 
 
     //獲取USER已加入的收藏話題
-    public void collectedCategories(HttpServletRequest request, HttpServletResponse response){
+    public void collectedCategories(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();
         Access access = (Access) session.getAttribute("access");
         int userId = access.getUserId();
@@ -73,8 +76,9 @@ public class ForumServlet extends BaseServlet {
         String J_categories = JSON.toJSONString(collectedCategories);
         responseJOSN(response, J_categories);
     }
+
     //加入收藏話題
-    public void addCategoryCollect(HttpServletRequest request, HttpServletResponse response){
+    public void addCategoryCollect(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();
         Access access = (Access) session.getAttribute("access");
         int userId = access.getUserId();
@@ -86,17 +90,14 @@ public class ForumServlet extends BaseServlet {
     //獲得文章及留言串
     public void postBean(HttpServletRequest request, HttpServletResponse response) {
         int postId = Integer.parseInt(request.getParameter("postId"));
-        PostBean postBean = postService.getPostBean(postId);
-
+        int userId = 0;
         HttpSession session = request.getSession();
         Access access = (Access) session.getAttribute("access");
-
         if (access != null) {
-            int userId = access.getUserId();
-            postBean.setUserId(userId);
-            if(postService.checkUserAndPostMatch(userId,postId)) {
-                postBean.setEdit(true);}
+            userId = access.getUserId();
         }
+        PostBean postBean = postService.getPostBean(postId, userId);
+
         String s = JSON.toJSONString(postBean);
         responseJOSN(response, s);
     }

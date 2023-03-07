@@ -14,7 +14,7 @@
             crossorigin="anonymous"
             referrerpolicy="no-referrer"
     />
-    <link type="text/css" rel="stylesheet" href="http://localhost:8080/elitebaby/forum.css"/>
+    <link type="text/css" rel="stylesheet" href="../forum.css"/>
 
     <template id="post-template">
         <article class="post-article">
@@ -35,6 +35,7 @@
                     <span class="showLike"></span>
                 </div>
                 <div class="edit">編輯</div>
+                <div class="delete">刪除</div>
                 <div class="post-img"/>
             </div>
         </article>
@@ -67,7 +68,7 @@
             <div class="d2">
                 <form
                         class="form"
-                        action="http://localhost:8080/elitebaby/publish/publishPost"
+                        action="../publish/publishPost"
                         method="post"
                         enctype="multipart/form-data"
                 >
@@ -80,9 +81,9 @@
                     <label for="textarea">內容:</label><br>
                     <textarea class="textarea" name="content" required></textarea>
                     <br/><br/>
-                    <label>插入圖片:</label>
+                    <label class="label-img">插入圖片:</label>
                     <input type="file" name="image" multiple/><br/><br/>
-                    <input type="submit" value="送出"/>
+                    <input type="submit" name="submit" value="送出"/>
                 </form>
             </div>
             <hr/>
@@ -96,7 +97,7 @@
             <div class="d2">
                 <form
                         class="form"
-                        action="http://localhost:8080/elitebaby/publish/publishMsg"
+                        action="../publish/publishMsg"
                         method="post"
                         enctype="multipart/form-data"
                 >
@@ -114,16 +115,25 @@
     </template>
 </head>
 <body>
+<% Access access = (Access) session.getAttribute("access");%>
 <header>Header</header>
 
 <div class="sticky">
-    <div class="search">
-        <span>歡迎 USERNAME</span>
+    <div class="welcome">
+        <%
+            String userName = "訪客";
+            if (access != null) {
+                userName = access.getUserName();
+            }
+        %>
+        歡迎 <span class="wel-user"><%=userName%></span>
         <span>積分: 100</span>
     </div>
     <div class="homepage button">首頁</div>
     <div id="publish" class="button">我要發文</div>
     <div class="follow button">收藏</div>
+    <div class="login button">登入</div>
+    <div class="logout button">登出</div>
 </div>
 
 <% boolean order = (boolean) request.getAttribute("order");
@@ -134,10 +144,10 @@
     <main>
         <section class="left">
             <div class="switch">文章排序:
-                <a href="http://localhost:8080/elitebaby/forum/home?order=<%=order%>&switch=1"><%=showOrder%>
+                <a href="../forum/home?order=<%=order%>&switch=1"><%=showOrder%>
                 </a>
             </div>
-            <form style="display: inline-block" action="http://localhost:8080/elitebaby/forum/home">
+            <form style="display: inline-block" action="../forum/home">
                 <input class="input-text" type="text" placeholder="文字搜尋" name="topic"/>
                 <input type="hidden" name="order" value="<%=order%>">
                 <input type="hidden" name="categoryId" value="<%=categoryId%>">
@@ -148,13 +158,13 @@
                 <div class="text">我的最愛</div>
                 <div class="cloneBlock">
                     <%
-                        Access access = (Access) session.getAttribute("access");
+                        //                        Access access = (Access) session.getAttribute("access");
                         if (access != null) {
                             ArrayList<Category> CCs = (ArrayList<Category>) request.getAttribute("CCs");
                             for (Category cc : CCs) {
                     %>
                     <div class="items category<%=cc.getId()%>">
-                        <a href="http://localhost:8080/elitebaby/forum/home?order=<%=order%>&categoryId=<%=cc.getId()%>">
+                        <a href="../forum/home?order=<%=order%>&categoryId=<%=cc.getId()%>">
                             <span class="<%=cc.getImg()%> item"> <%=cc.getCategory()%></span>
                         </a>
                         <span class="addCollections" data-value="<%=cc.getId()%>">收藏</span>
@@ -172,7 +182,7 @@
                 <div class="text">幼兒生</div>
                 <% for (Category lc : LCs) {%>
                 <div class="items category<%=lc.getId()%>">
-                    <a href="http://localhost:8080/elitebaby/forum/home?order=<%=order%>&categoryId=<%=lc.getId()%>">
+                    <a href="../forum/home?order=<%=order%>&categoryId=<%=lc.getId()%>">
                         <span class="<%=lc.getImg()%> item"> <%=lc.getCategory()%></span>
                     </a>
                     <span class="addCollections" data-value="<%=lc.getId()%>">收藏</span>
@@ -182,7 +192,7 @@
                 <div class="text">大學生</div>
                 <% for (Category hc : HCs) {%>
                 <div class="items category<%=hc.getId()%>">
-                    <a href="http://localhost:8080/elitebaby/forum/home?order=<%=order%>&categoryId=<%=hc.getId()%>">
+                    <a href="../forum/home?order=<%=order%>&categoryId=<%=hc.getId()%>">
                         <span class="<%=hc.getImg()%> item"> <%=hc.getCategory()%></span>
                     </a>
                     <span class="addCollections" data-value="<%=hc.getId()%>">收藏</span>
@@ -196,7 +206,7 @@
                 ArrayList<Post> posts = (ArrayList<Post>) request.getAttribute("posts");
             %>
             <% for (Post p : posts) { %>
-            <article>
+            <article class="post-article">
                 <div class="d1">
                     <div class="user"><%=p.getUserName()%>
                     </div>
@@ -239,12 +249,12 @@
         for (const like of likes) {
             like.addEventListener("click", () => {
                 const showLike = like.querySelector(".showLike");
-                fetch("http://localhost:8080/elitebaby/forum/likeclick?postId=" + like.dataset.value)
+                fetch("../forum/likeclick?postId=" + like.dataset.value)
                     .then(response => response.text())
                     .then(text => JSON.parse(text))
                     .then(data => {
                         if (data === "login") {
-                            window.location.href = "/elitebaby/frontForum/login.jsp";
+                            window.location.href = "../frontForum/login.jsp";
                         }
                         if (typeof data === "number") {
                             showLike.innerText = data;
@@ -262,12 +272,12 @@
         for (const like of likes) {
             like.addEventListener("click", () => {
                 const showLike = like.querySelector(".showLike");
-                fetch("http://localhost:8080/elitebaby/msg/likeclick?msgId=" + like.dataset.value)
+                fetch("../msg/likeclick?msgId=" + like.dataset.value)
                     .then(response => response.text())
                     .then(text => JSON.parse(text))
                     .then(data => {
                         if (data === "login") {
-                            window.location.href = "/elitebaby/frontForum/login.jsp";
+                            window.location.href = "../frontForum/login.jsp";
                         }
                         if (typeof data === "number") {
                             showLike.innerText = data;
@@ -283,13 +293,13 @@
         const collections = document.querySelectorAll(".addCollections")
         for (const coll of collections) {
             coll.addEventListener("click", () => {
-                fetch("http://localhost:8080/elitebaby/forum/addCategoryCollect?categoryId=" + coll.dataset.value)
+                fetch("../forum/addCategoryCollect?categoryId=" + coll.dataset.value)
                     .then(response => response.text())
                     .then(text => JSON.parse(text))
                     .then(data => {
                         // console.log(data);
                         if (data === "login") {
-                            window.location.href = "/elitebaby/frontForum/login.jsp";
+                            window.location.href = "../frontForum/login.jsp";
                         }
                         if (data === true) {
                             //產生收藏文章 clone
@@ -371,7 +381,7 @@
         const postsD2 = document.querySelectorAll(".d2")
         for (const p of postsD2) {
             p.addEventListener("click", () => {
-                fetch("http://localhost:8080/elitebaby/forum/postBean?postId=" + p.dataset.value)
+                fetch("../forum/postBean?postId=" + p.dataset.value)
                     .then(response => response.text())
                     .then(text => JSON.parse(text))
                     .then(data => {
@@ -379,13 +389,14 @@
                         const post = data.post;
                         const msgs = data.msgs;
                         const length = data.dataLength;
-                        console.log(data.edit);
+
                         const panel = document.querySelector(".right");
                         panel.innerText = '';
 
                         const postClone = postTemplateFill(post, templatePost);
-                        if(!data.edit){
+                        if (!data.edit) {
                             postClone.querySelector(".edit").style.display = "none";
+                            postClone.querySelector(".delete").style.display = "none";
                         }
                         panel.appendChild(postClone);
 
@@ -402,7 +413,7 @@
                             const form = formClone.querySelector(".form");
                             form.addEventListener("submit", (event) => {
                                 event.preventDefault();
-                                fetch('http://localhost:8080/elitebaby/publish/publishMsg', {
+                                fetch('../publish/publishMsg', {
                                     body: new FormData(form),
                                     method: "post"
                                 })
@@ -423,6 +434,7 @@
                         likeListener();
                         likeMsgListener();
                         editListener(post);
+                        deleteListener(post);
                     })
             })
         }
@@ -432,7 +444,7 @@
     //回首頁
     const homepage = document.querySelector(".homepage");
     homepage.addEventListener("click", () => {
-        window.location.href = "http://localhost:8080/elitebaby/forum/home";
+        window.location.href = "../forum/home";
     });
     //我要發文按鈕監聽器
     const publish = document.querySelector("#publish");
@@ -460,12 +472,12 @@
     function getPublishForm() {
         const panel = document.querySelector(".right");
         const postFormTemplate = document.querySelector("#post-form-template").content;
-        fetch("http://localhost:8080/elitebaby/publish/getForm")
+        fetch("../publish/getForm")
             .then((response) => response.text())
             .then((text) => JSON.parse(text))
             .then((data) => {
                 if (data === "login") {
-                    window.location.href = "/elitebaby/frontForum/login.jsp";
+                    window.location.href = "../frontForum/login.jsp";
                 }
                 panel.innerText = '';
                 const postForm = fillPostFormTemplate(data, postFormTemplate);
@@ -479,12 +491,12 @@
         const edit = document.querySelector(".edit");
         const postFormTemplate = document.querySelector("#post-form-template").content;
         edit.addEventListener("click", () => {
-            fetch("http://localhost:8080/elitebaby/publish/getForm")
+            fetch("../publish/getForm")
                 .then((response) => response.text())
                 .then((text) => JSON.parse(text))
                 .then((data) => {
                     if (data === "login") {
-                        window.location.href = "/elitebaby/frontForum/login.jsp";
+                        window.location.href = "../frontForum/login.jsp";
                     }
                     panel.innerText = '';
                     const postForm = fillPostFormTemplate(data, postFormTemplate);//填入部分資料
@@ -492,11 +504,36 @@
                     postForm.querySelector(".topic").value = post.topic;
                     postForm.querySelector(".textarea").value = post.content;
                     //圖片修改功能
-                    postForm.querySelector(".form").action = "http://localhost:8080/elitebaby/publish/update?postId=" + post.postId
+                    postForm.querySelector(".form").action = "../publish/update?postId=" + post.postId;
+                    postForm.querySelector(".label-img").remove();
+                    postForm.querySelector('input[name="image"]').remove();
+                    postForm.querySelector('input[name="submit"]').value = "確認編輯";
                     panel.appendChild(postForm);
                 });
         })
     }
 
+    //刪除按鈕監聽器
+    function deleteListener(post) {
+        const delete1 = document.querySelector(".delete");
+        delete1.addEventListener("click", () => {
+            if (confirm("您確定刪除?")) {
+                window.location.href = "../publish/delete?postId=" + post.postId;
+            }
+        });
+    }
+
+    //登入
+    const login = document.querySelector(".login");
+    console.log(login);
+    login.addEventListener("click", () => {
+        window.location.href = "../frontForum/login.html";
+    });
+
+    //登出
+    const logout = document.querySelector(".logout");
+    logout.addEventListener("click", () => {
+        window.location.href = "../access/logout";
+    });
 </script>
 </html>

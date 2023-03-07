@@ -23,30 +23,30 @@ public class OperationServlet extends BaseServlet {
         postService.PostGenerator();
         postService.likeGenerator();
         msgService.MsgGenerator();
-        response.sendRedirect("http://localhost:8080/elitebaby/forum/home");
+        response.sendRedirect("../forum/home");
     }
 
     public void delete(HttpServletRequest request, HttpServletResponse response) throws  IOException {
         postService.deleteAll();
-        response.sendRedirect("http://localhost:8080/elitebaby/forum/home");
+        response.sendRedirect("../forum/home");
     }
     public void post(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         postService.PostGenerator();
-        response.sendRedirect("http://localhost:8080/elitebaby/forum/home");
+        response.sendRedirect("../forum/home");
     }
     public void postlike(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         postService.likeGenerator();
-        response.sendRedirect("http://localhost:8080/elitebaby/forum/home");
+        response.sendRedirect("../forum/home");
     }
 
     public void likeclean(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         postService.likeClean();
-        response.sendRedirect("http://localhost:8080/elitebaby/forum/home");
+        response.sendRedirect("../forum/home");
     }
 
     public void msg(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         msgService.MsgGenerator();
-        response.sendRedirect("http://localhost:8080/elitebaby/forum/home");
+        response.sendRedirect("../forum/home");
     }
 
 

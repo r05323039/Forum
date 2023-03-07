@@ -44,7 +44,7 @@ public class PublishServlet extends BaseServlet {
         Post post = new Post(userId, category, topic, content);
         ArrayList<InputStream> ins = getImageInputStreams(request.getParts());
         publishService.insertPost(post, ins);
-        response.sendRedirect("http://localhost:8080/elitebaby/forum/home");
+        response.sendRedirect("../forum/home");
     }
 
     public void publishMsg(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -91,10 +91,19 @@ public class PublishServlet extends BaseServlet {
             Post post = new Post(userId, category, topic, content);
             post.setPostId(postId);
             postService.update(post);
-            response.sendRedirect("http://localhost:8080/elitebaby/forum/home");
+            response.sendRedirect("../forum/home");
         }
         responseJOSN(response, "false");//無編輯權限
     }
+    public void delete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        System.out.println("publish/delete");
+        //取得參數
+        int postId = Integer.parseInt(request.getParameter("postId"));
+            publishService.delete(postId);
+            response.sendRedirect("../forum/home");
+        }
+
+
 }
 
 

@@ -77,18 +77,25 @@ public class PostService {
     }
 
 
-    public PostBean getPostBean(int postId) {
-        Post post = postDao.selectById(postId);
-        post = postImgDao.selectById(post);//封裝圖片
+    public PostBean getPostBean(int postId, int userId) {
+        Post post = postDao.selectById(postId);//文章基本屬性
+        post = postImgDao.selectById(post);//文章圖片
         ArrayList<Msg> msgs = msgDao.selectAll(postId);//全部留言
-        msgs = msgImgDao.selectAll(msgs);//封裝留言圖片
+        msgs = msgImgDao.selectAll(msgs);//留言圖片
         int length = msgs.size();
-        String userName = accessDao.userNameById(post.getUserId());
+        String userName = accessDao.userNameById(userId);//登入者名稱
+        System.out.println("userName: " + userName);
+
         PostBean postBean = new PostBean();
         postBean.setPost(post);
         postBean.setMsgs(msgs);
         postBean.setDataLength(length);
         postBean.setUserName(userName);
+
+        postBean.setUserId(userId);
+        if (checkUserAndPostMatch(userId, postId)) {
+            postBean.setEdit(true);
+        }
         return postBean;
     }
 

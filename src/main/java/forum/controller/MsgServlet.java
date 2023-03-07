@@ -17,12 +17,12 @@ public class MsgServlet extends BaseServlet {
 
     public void like(HttpServletRequest request, HttpServletResponse response) throws IOException {
         msgService.likeGenerator();
-        response.sendRedirect("http://localhost:8080/elitebaby/forum/home");
+        response.sendRedirect("../forum/home");
     }
 
     public void likeclean(HttpServletRequest request, HttpServletResponse response) throws IOException {
         msgService.likeClean();
-        response.sendRedirect("http://localhost:8080/elitebaby/forum/home");
+        response.sendRedirect("../forum/home");
     }
 
     public void likeclick(HttpServletRequest request, HttpServletResponse response) {

@@ -33,7 +33,7 @@ a {
   display: flex;
   flex-wrap: wrap;
   border: 1px dotted black; }
-  .sticky .search {
+  .sticky .welcome {
     margin: 0 2rem;
     width: 60%; }
   .sticky .switch {
@@ -73,8 +73,8 @@ main {
       border: 1px solid red;
       margin: 1rem;
       background-color: azure; }
-      main section.right article.msg {
-        background-color: #f3fbfb; }
+      main section.right article.msg-article {
+        background-color: #abf2f0; }
       main section.right article .d1 {
         display: flex;
         flex-wrap: wrap;

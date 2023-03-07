@@ -227,7 +227,59 @@ public class PostDao extends DaoId {
             }
         }
     }
+    public void deleteById(int postId) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            connection.setAutoCommit(false);
 
+            preparedStatement = connection.prepareStatement("delete from msg_like where msg_id in (select msg_id from msg where post_id = ?);");
+            preparedStatement.setInt(1, postId);
+            preparedStatement.executeUpdate();
+
+            preparedStatement = connection.prepareStatement("delete from msg_imgs where msg_id in (select msg_id from msg where post_id = ?);");
+            preparedStatement.setInt(1, postId);
+            preparedStatement.executeUpdate();
+
+            preparedStatement = connection.prepareStatement("delete from msg where post_id = ?;");
+            preparedStatement.setInt(1, postId);
+            preparedStatement.executeUpdate();
+
+            preparedStatement = connection.prepareStatement("delete from post_like where post_id = ?;");
+            preparedStatement.setInt(1, postId);
+            preparedStatement.executeUpdate();
+
+            preparedStatement = connection.prepareStatement("delete from post_imgs where post_id = ?;");
+            preparedStatement.setInt(1, postId);
+            preparedStatement.executeUpdate();
+
+            preparedStatement = connection.prepareStatement("delete from post where post_id = ?;");
+            preparedStatement.setInt(1, postId);
+            preparedStatement.executeUpdate();
+
+            connection.commit();
+
+        } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+            e.printStackTrace();
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     //取得所有Post的id
     public ArrayList<Integer> getPostIds() {

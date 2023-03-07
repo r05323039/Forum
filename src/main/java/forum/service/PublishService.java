@@ -43,7 +43,11 @@ public class PublishService {
         msgImgDao.insert(msgId, ins);
         msg = msgDao.selectById(msgId);
         msg = msgImgDao.selectById(msg);
-        System.out.println(msg);
         return msg;
+    }
+
+    public void delete(int postId) {
+        postDao.deleteById(postId);
+
     }
 }
