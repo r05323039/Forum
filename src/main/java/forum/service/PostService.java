@@ -84,7 +84,6 @@ public class PostService {
         msgs = msgImgDao.selectAll(msgs);//留言圖片
         int length = msgs.size();
         String userName = accessDao.userNameById(userId);//登入者名稱
-        System.out.println("userName: " + userName);
 
         PostBean postBean = new PostBean();
         postBean.setPost(post);

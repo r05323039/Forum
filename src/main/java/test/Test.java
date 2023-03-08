@@ -12,50 +12,38 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 public class Test {
-    public final static String URL = "jdbc:mysql://localhost:3306/elitebaby";
-    public final static String USER = "root";
-    public final static String PASSWORD = "password";
 
-
-    static {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public static void main(String[] args) throws IOException {
-        ArrayList<InputStream> ins = new ArrayList<>();
-        ins.add(new FileInputStream("D:/aaa/33.jpg"));
-        ins.add(new FileInputStream("D:/aaa/44.jpg"));
-        for (InputStream in : ins)
-            System.out.println(in);
-        int postId = 40;
-
-        File directory = new File("src/main/webapp/images");
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-        String dirPath = directory.getPath();
-
-        String sql = "insert into post_imgs (post_id, img_path) values(?,?);";
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement ps = connection.prepareStatement(sql)) {
-            for (int i = 0; i < ins.size(); i++) {
-                ps.setInt(1, postId);
-                String fileName = dirPath + "/" + postId + "_" + i;
-                Files.copy(ins.get(i), Paths.get(fileName + ".jpg"),
-                        StandardCopyOption.REPLACE_EXISTING);
-                ps.setString(2, fileName);
-                ps.addBatch();
+        ArrayList<String> categoryNames = new ArrayList<>(Arrays.asList("寵物", "健康"));
+        System.out.println(categoryNames);
+        categoryNames.add("書");        categoryNames.add("書");
+        StringBuilder sqlBuilder = new StringBuilder("select p.*, ac.user_name, count(l.like_id) as plike\n" +
+                "from post p\n" +
+                "         left join post_like l on p.post_id = l.post_id\n" +
+                "         join access ac on ac.user_id = p.user_id\n" +
+                "where p.category in (?");
+        for (int i = 0; i < categoryNames.size(); i++) {
+            if (i > 0){
+                sqlBuilder.append(" ,?");
             }
-            ps.executeBatch();
-        } catch (SQLException | IOException e) {
-            throw new RuntimeException(e);
         }
+        sqlBuilder.append(") group by l.post_id;");
+        String sql = sqlBuilder.toString();
+        System.out.println(sql);
+////                "group by l.post_id;";);
+//        for (int i = 0; i < ids.size(); i++) {
+//            if (i > 0) {
+//                sqlBuilder.append(",?");
+//            }
+//        }
+//        sqlBuilder.append(")");
+//        String sql = sqlBuilder.toString();
+
     }
 }

@@ -103,7 +103,6 @@ public class PublishServlet extends BaseServlet {
             response.sendRedirect("../forum/home");
         }
 
-
 }
 
 

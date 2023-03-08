@@ -14,7 +14,7 @@
             crossorigin="anonymous"
             referrerpolicy="no-referrer"
     />
-    <link type="text/css" rel="stylesheet" href="../forum.css"/>
+    <link type="text/css" rel="stylesheet" href="../frontForum/forum.css"/>
 
     <template id="post-template">
         <article class="post-article">
@@ -131,7 +131,6 @@
     </div>
     <div class="homepage button">首頁</div>
     <div id="publish" class="button">我要發文</div>
-    <div class="follow button">收藏</div>
     <div class="login button">登入</div>
     <div class="logout button">登出</div>
 </div>
@@ -158,14 +157,13 @@
                 <div class="text">我的最愛</div>
                 <div class="cloneBlock">
                     <%
-                        //                        Access access = (Access) session.getAttribute("access");
                         if (access != null) {
                             ArrayList<Category> CCs = (ArrayList<Category>) request.getAttribute("CCs");
                             for (Category cc : CCs) {
                     %>
                     <div class="items category<%=cc.getId()%>">
                         <a href="../forum/home?order=<%=order%>&categoryId=<%=cc.getId()%>">
-                            <span class="<%=cc.getImg()%> item"> <%=cc.getCategory()%></span>
+                            <span class="item"> <%=cc.getCategory()%></span>
                         </a>
                         <span class="addCollections" data-value="<%=cc.getId()%>">收藏</span>
                     </div>
@@ -183,7 +181,7 @@
                 <% for (Category lc : LCs) {%>
                 <div class="items category<%=lc.getId()%>">
                     <a href="../forum/home?order=<%=order%>&categoryId=<%=lc.getId()%>">
-                        <span class="<%=lc.getImg()%> item"> <%=lc.getCategory()%></span>
+                        <span class="item"> <%=lc.getCategory()%></span>
                     </a>
                     <span class="addCollections" data-value="<%=lc.getId()%>">收藏</span>
                 </div>
@@ -193,7 +191,7 @@
                 <% for (Category hc : HCs) {%>
                 <div class="items category<%=hc.getId()%>">
                     <a href="../forum/home?order=<%=order%>&categoryId=<%=hc.getId()%>">
-                        <span class="<%=hc.getImg()%> item"> <%=hc.getCategory()%></span>
+                        <span class="item"> <%=hc.getCategory()%></span>
                     </a>
                     <span class="addCollections" data-value="<%=hc.getId()%>">收藏</span>
                 </div>

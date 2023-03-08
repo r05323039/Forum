@@ -115,6 +115,7 @@ public class PostDao extends DaoId {
         }
     }
 
+
     public int insert(Post post) {
         int key = -1;
         String sql = "insert into post(USER_ID, CATEGORY, TOPIC, CONTENT) values  (?,?,?,?);";
@@ -227,7 +228,8 @@ public class PostDao extends DaoId {
             }
         }
     }
-    public void deleteById(int postId) {
+
+    public boolean deleteById(int postId) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -259,7 +261,7 @@ public class PostDao extends DaoId {
             preparedStatement.executeUpdate();
 
             connection.commit();
-
+            return true;
         } catch (SQLException e) {
             try {
                 connection.rollback();
@@ -279,6 +281,7 @@ public class PostDao extends DaoId {
                 e.printStackTrace();
             }
         }
+        return false;
     }
 
     //取得所有Post的id
@@ -291,10 +294,6 @@ public class PostDao extends DaoId {
             while (rs.next()) {
                 ids.add(rs.getInt("post_id"));
             }
-
-            for (int id : ids)
-                System.out.println(id);
-
             return ids;
         } catch (SQLException e) {
             throw new RuntimeException(e);

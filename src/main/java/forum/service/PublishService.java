@@ -48,6 +48,5 @@ public class PublishService {
 
     public void delete(int postId) {
         postDao.deleteById(postId);
-
     }
 }

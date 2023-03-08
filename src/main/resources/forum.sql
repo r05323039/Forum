@@ -27,8 +27,8 @@ create table category
     id       int auto_increment
         primary key,
     category varchar(50)  not null,
-    img      varchar(200) not null,
-    level    int          not null,
+    img      varchar(200)
+    level    int
     constraint category
         unique (category),
     constraint checklevel
