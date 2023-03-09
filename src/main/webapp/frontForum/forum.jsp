@@ -127,7 +127,6 @@
             }
         %>
         歡迎 <span class="wel-user"><%=userName%></span>
-        <span>積分: 100</span>
     </div>
     <div class="homepage button">首頁</div>
     <div id="publish" class="button">我要發文</div>
@@ -177,7 +176,7 @@
                     ArrayList<Category> LCs = (ArrayList<Category>) request.getAttribute("LCs");
                     ArrayList<Category> HCs = (ArrayList<Category>) request.getAttribute("HCs");
                 %>
-                <div class="text">幼兒生</div>
+                <div class="text">話題分類</div>
                 <% for (Category lc : LCs) {%>
                 <div class="items category<%=lc.getId()%>">
                     <a href="../forum/home?order=<%=order%>&categoryId=<%=lc.getId()%>">
@@ -187,7 +186,7 @@
                 </div>
                 <%}%>
 
-                <div class="text">大學生</div>
+
                 <% for (Category hc : HCs) {%>
                 <div class="items category<%=hc.getId()%>">
                     <a href="../forum/home?order=<%=order%>&categoryId=<%=hc.getId()%>">
@@ -386,7 +385,6 @@
                         console.log(data); //OK
                         const post = data.post;
                         const msgs = data.msgs;
-                        const length = data.dataLength;
 
                         const panel = document.querySelector(".right");
                         panel.innerText = '';
@@ -523,7 +521,6 @@
 
     //登入
     const login = document.querySelector(".login");
-    console.log(login);
     login.addEventListener("click", () => {
         window.location.href = "../frontForum/login.html";
     });

@@ -1,6 +1,7 @@
 package forum.service;
 
 import forum.dao.CategoryDao;
+import forum.dao.MsgDao;
 import forum.dao.PostDao;
 import forum.pojo.Category;
 import forum.pojo.Post;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 public class BackendService {
     private CategoryDao categoryDao = new CategoryDao();
     private PostDao postDao = new PostDao();
+    private MsgDao msgDao = new MsgDao();
 
     public ArrayList<Category> categoryList() {
         ArrayList<Category> categories = categoryDao.selectAll();
@@ -37,12 +39,17 @@ public class BackendService {
                     postsByCategory.add(p);
             }
         }
-       return postsByCategory;
+        return postsByCategory;
     }
 
-    public boolean delete(int postId) {
+    public boolean deletePost(int postId) {
         return postDao.deleteById(postId);
     }
+
+    public boolean deleteMsg(int msgId) {
+        return msgDao.deleteById(msgId);
+    }
 }
+
 
 

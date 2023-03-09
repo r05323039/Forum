@@ -47,10 +47,15 @@ public class BackendServlet extends BaseServlet {
         responseJOSN(response, J);
     }
 
-    public void delete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        System.out.println("backend/delete");
+    public void deletePost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int postId = Integer.parseInt(request.getParameter("postId"));
-        boolean delete = backendService.delete(postId);
+        boolean delete = backendService.deletePost(postId);
+        responseJOSN(response, String.valueOf(delete));
+    }
+
+    public void deleteMsg(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int msgId = Integer.parseInt(request.getParameter("msgId"));
+        boolean delete = backendService.deleteMsg(msgId);
         responseJOSN(response, String.valueOf(delete));
     }
 }

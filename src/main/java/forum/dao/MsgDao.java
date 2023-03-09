@@ -1,8 +1,6 @@
 package forum.dao;
 
 import forum.pojo.Msg;
-import forum.pojo.Post;
-import org.junit.Test;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -112,6 +110,49 @@ public class MsgDao extends DaoId {
         } catch (SQLException e) {
 
         }
+    }
+
+    public boolean deleteById(int msgId) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            connection.setAutoCommit(false);
+
+            preparedStatement = connection.prepareStatement("delete from msg_like where msg_id = ?;");
+            preparedStatement.setInt(1, msgId);
+            preparedStatement.executeUpdate();
+
+            preparedStatement = connection.prepareStatement("delete from msg_imgs where msg_id = ?;");
+            preparedStatement.setInt(1, msgId);
+            preparedStatement.executeUpdate();
+
+            preparedStatement = connection.prepareStatement("delete from msg where msg_id = ?;");
+            preparedStatement.setInt(1, msgId);
+            preparedStatement.executeUpdate();
+
+            connection.commit();
+            return true;
+        } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+            e.printStackTrace();
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 }
 

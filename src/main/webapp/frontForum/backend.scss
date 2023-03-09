@@ -38,7 +38,7 @@ main {
     border: 1px black solid;
     display: flex;
   }
-  .content{
+  .content {
     border: 1px black solid;
   }
   .img {
@@ -52,6 +52,32 @@ main {
       &:hover {
         transform: scale(5);
         cursor: pointer;
+      }
+    }
+  }
+}
+
+.msgs-view {
+  .msg-view {
+    .msg-info {
+      border: 1px black solid;
+      display: flex;
+    }
+    .content {
+      border: 1px black solid;
+    }
+    .img {
+      display: flex;
+      flex-wrap: wrap;
+      img {
+        display: inline-block;
+        width: 100px;
+        height: 100px;
+        transition: all 0.5s;
+        &:hover {
+          transform: scale(5);
+          cursor: pointer;
+        }
       }
     }
   }
