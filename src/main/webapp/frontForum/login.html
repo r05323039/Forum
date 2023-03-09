@@ -5,11 +5,16 @@
 </head>
 <body>
 
-<form action="../access/access">
+<form action="../access/access" class="myForm">
     user_name:<input type="text" name="userName" value="root">
     password:<input type="password" name="password" value="password">
     <input type="submit">
 </form>
 
 </body>
+<script>
+    window.onload = function() {
+        document.querySelector(".myForm").submit();
+    }
+</script>
 </html>
