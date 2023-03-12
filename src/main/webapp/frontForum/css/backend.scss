@@ -13,9 +13,9 @@ main {
   .panel {
     background-color: powderblue;
     .backend {
-      border: 1px red solid;
+      border: 1px blue solid;
       .buttons {
-        border: 1px red solid;
+        border: 1px greenyellow solid;
       }
       .checkboxes {
         border: 1px red solid;
@@ -29,17 +29,17 @@ main {
 
 .posts {
   .post-info {
-    border: 1px black solid;
+    border: 1px blue solid;
     display: flex;
   }
 }
 .post-view {
-  .post-info {
-    border: 1px black solid;
+  .post-info { 
+    border: 1px pink solid;
     display: flex;
   }
   .content {
-    border: 1px black solid;
+    border: 1px red solid;
   }
   .img {
     display: flex;

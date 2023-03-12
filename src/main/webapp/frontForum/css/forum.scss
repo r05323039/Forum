@@ -8,7 +8,6 @@ header {
   background-color: pink;
 }
 
-
 .button {
   background-color: #4caf50; /* Green */
   border: none;
@@ -18,7 +17,7 @@ header {
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
-  margin: 2px 1px;
+  margin-right:1rem;
   transition-duration: 0.4s;
   cursor: pointer;
   &:hover {
@@ -34,14 +33,14 @@ a {
   text-decoration: none;
 }
 
-
 .sticky {
   display: flex;
   flex-wrap: wrap;
   border: 1px dotted black;
   .welcome {
     margin: 0 2rem;
-    width: 60%;
+    width: 50%;
+    font-size: 20px;
   }
   .switch {
     width: 10%;
@@ -70,9 +69,9 @@ main {
         border: 1px sandybrown solid;
         padding: 1rem;
       }
-      & .addCollections{
+      & .addCollections {
         font-size: small;
-        float: right
+        float: right;
       }
     }
     div.search-text {

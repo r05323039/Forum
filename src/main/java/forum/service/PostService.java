@@ -72,7 +72,6 @@ public class PostService {
 
     public boolean checkUserAndPostMatch(int userId, int postId) {
         boolean b = postDao.selectByPostIdUserId(userId, postId);
-        System.out.println("boolean:" + b);
         return b;
     }
 

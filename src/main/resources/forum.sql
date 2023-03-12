@@ -1,3 +1,8 @@
+drop schema if exists `elitebaby`;
+create database `elitebaby`;
+use `elitebaby`;
+
+
 DROP TABLE IF EXISTS access;
 create table access
 (
@@ -27,8 +32,8 @@ create table category
     id       int auto_increment
         primary key,
     category varchar(50)  not null,
-    img      varchar(200)
-    level    int
+    img      varchar(200),
+    level    int,
     constraint category
         unique (category),
     constraint checklevel

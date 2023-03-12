@@ -150,7 +150,7 @@
                 <input class="input-text" type="text" placeholder="文字搜尋" name="topic"/>
                 <input type="hidden" name="order" value="<%=order%>">
                 <input type="hidden" name="categoryId" value="<%=categoryId%>">
-                <input type="submit" value="標題搜尋">
+                <input type="submit" value="標題搜尋" class="button">
             </form>
             <br/>
             <div class="category">
