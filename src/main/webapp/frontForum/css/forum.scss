@@ -36,7 +36,7 @@ a {
 .sticky {
   display: flex;
   flex-wrap: wrap;
-  border: 1px dotted black;
+  // border: 1px dotted black;
   .welcome {
     margin: 0 2rem;
     width: 50%;
@@ -56,7 +56,7 @@ a {
 main {
   margin: 3rem 1rem;
   display: flex;
-  // border: 1px dotted black;
+  border: 1px dotted black;
 
   section.left {
     margin: 0 1rem;
@@ -117,7 +117,7 @@ main {
         display: flex;
         flex-wrap: wrap;
         padding: 0.5rem;
-        border: 1px dotted blue;
+        // border: 1px dotted blue;
         .category {
           // border: 1px solid red;
           color: blue;
@@ -143,7 +143,7 @@ main {
       }
       .d3 {
         padding: 0.5rem;
-        border: 1px dotted blue;
+        // border: 1px dotted blue;
         .like {
           // border: 1px solid red;
         }
